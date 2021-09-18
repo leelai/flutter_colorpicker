@@ -256,31 +256,29 @@ class _ColorPickerState extends State<ColorPicker> {
               height: widget.colorPickerWidth * widget.pickerAreaHeightPercent,
               child: colorPickerArea(),
             ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(15.0, 5.0, 10.0, 5.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                ColorIndicator(currentHsvColor),
-                Expanded(
-                  child: Column(
-                    children: <Widget>[
+          if (widget.showIndicator) ColorIndicator(currentHsvColor),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              // if (widget.showIndicator) ColorIndicator(currentHsvColor),
+              Expanded(
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(
+                      height: 40.0,
+                      width: widget.colorPickerWidth,
+                      child: colorPickerSlider(TrackType.hue),
+                    ),
+                    if (widget.enableAlpha)
                       SizedBox(
                         height: 40.0,
                         width: widget.colorPickerWidth - 75.0,
-                        child: colorPickerSlider(TrackType.hue),
+                        child: colorPickerSlider(TrackType.alpha),
                       ),
-                      if (widget.enableAlpha)
-                        SizedBox(
-                          height: 40.0,
-                          width: widget.colorPickerWidth - 75.0,
-                          child: colorPickerSlider(TrackType.alpha),
-                        ),
-                    ],
-                  ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
           if (widget.showLabel)
             ColorPickerLabel(
@@ -288,7 +286,7 @@ class _ColorPickerState extends State<ColorPicker> {
               enableAlpha: widget.enableAlpha,
               textStyle: widget.labelTextStyle,
             ),
-          const SizedBox(height: 20.0),
+          //const SizedBox(height: 20.0),
         ],
       );
     } else {
