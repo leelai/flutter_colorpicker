@@ -14,8 +14,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  bool lightTheme = true;
-  Color currentColor = Colors.limeAccent;
+  bool lightTheme = false;
+  Color currentColor = Color(0xFFFF0000);
   List<Color> currentColors = [Colors.limeAccent, Colors.green];
 
   void changeColor(Color color) => setState(() => currentColor = color);
@@ -74,9 +74,11 @@ class _MyAppState extends State<MyApp> {
                                 onColorChanged: changeColor,
                                 colorPickerWidth: 300.0,
                                 pickerAreaHeightPercent: 0.7,
-                                enableAlpha: true,
+                                enableAlpha: false,
                                 displayThumbColor: true,
-                                showLabel: true,
+                                showLabel: false,
+                                showIndicator: false,
+                                showColorPickerArea: false,
                                 paletteType: PaletteType.hsv,
                                 pickerAreaBorderRadius: const BorderRadius.only(
                                   topLeft: Radius.circular(2.0),

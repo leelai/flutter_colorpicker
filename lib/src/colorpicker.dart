@@ -20,6 +20,8 @@ class ColorPicker extends StatefulWidget {
     this.paletteType = PaletteType.hsv,
     this.enableAlpha = true,
     this.showLabel = true,
+    this.showIndicator = true,
+    this.showColorPickerArea = true,
     this.labelTextStyle,
     this.displayThumbColor = false,
     this.portraitOnly = false,
@@ -36,6 +38,8 @@ class ColorPicker extends StatefulWidget {
   final PaletteType paletteType;
   final bool enableAlpha;
   final bool showLabel;
+  final bool showIndicator;
+  final bool showColorPickerArea;
   final TextStyle? labelTextStyle;
   final bool displayThumbColor;
   final bool portraitOnly;
@@ -246,11 +250,12 @@ class _ColorPickerState extends State<ColorPicker> {
         widget.portraitOnly) {
       return Column(
         children: <Widget>[
-          SizedBox(
-            width: widget.colorPickerWidth,
-            height: widget.colorPickerWidth * widget.pickerAreaHeightPercent,
-            child: colorPickerArea(),
-          ),
+          if (widget.showColorPickerArea)
+            SizedBox(
+              width: widget.colorPickerWidth,
+              height: widget.colorPickerWidth * widget.pickerAreaHeightPercent,
+              child: colorPickerArea(),
+            ),
           Padding(
             padding: const EdgeInsets.fromLTRB(15.0, 5.0, 10.0, 5.0),
             child: Row(
@@ -289,19 +294,20 @@ class _ColorPickerState extends State<ColorPicker> {
     } else {
       return Row(
         children: <Widget>[
-          Expanded(
-            child: SizedBox(
-              width: 300.0,
-              height: 200.0,
-              child: colorPickerArea(),
+          if (widget.showColorPickerArea)
+            Expanded(
+              child: SizedBox(
+                width: 300.0,
+                height: 200.0,
+                child: colorPickerArea(),
+              ),
             ),
-          ),
           Column(
             children: <Widget>[
               Row(
                 children: <Widget>[
                   const SizedBox(width: 20.0),
-                  ColorIndicator(currentHsvColor),
+                  if (widget.showIndicator) ColorIndicator(currentHsvColor),
                   Column(
                     children: <Widget>[
                       SizedBox(
@@ -320,7 +326,7 @@ class _ColorPickerState extends State<ColorPicker> {
                   const SizedBox(width: 10.0),
                 ],
               ),
-              const SizedBox(height: 20.0),
+              if (widget.showLabel) const SizedBox(height: 20.0),
               if (widget.showLabel)
                 ColorPickerLabel(
                   currentHsvColor,
