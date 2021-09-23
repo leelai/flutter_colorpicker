@@ -29,6 +29,9 @@ class ColorPicker extends StatefulWidget {
     this.pickerAreaHeightPercent = 1.0,
     this.pickerAreaBorderRadius = const BorderRadius.all(Radius.zero),
     this.hexInputController,
+    this.showIndicatorList = true,
+    this.showIndicatorListNum = 1,
+    this.maxIndex = 1,
   }) : super(key: key);
 
   final Color pickerColor;
@@ -39,6 +42,8 @@ class ColorPicker extends StatefulWidget {
   final bool enableAlpha;
   final bool showLabel;
   final bool showIndicator;
+  final bool showIndicatorList;
+  final int showIndicatorListNum;
   final bool showColorPickerArea;
   final TextStyle? labelTextStyle;
   final bool displayThumbColor;
@@ -46,6 +51,7 @@ class ColorPicker extends StatefulWidget {
   final double colorPickerWidth;
   final double pickerAreaHeightPercent;
   final BorderRadius pickerAreaBorderRadius;
+  final int maxIndex;
 
   /// Allows setting the color using text input, via [TextEditingController].
   ///
@@ -158,19 +164,28 @@ class ColorPicker extends StatefulWidget {
 }
 
 class _ColorPickerState extends State<ColorPicker> {
-  HSVColor currentHsvColor = const HSVColor.fromAHSV(0.0, 0.0, 0.0, 0.0);
+  int selected = 0;
+  List<HSVColor> hsvColors = [
+    HSVColor.fromColor(const Color(0xFFFF0000)),
+    HSVColor.fromColor(const Color(0xFFFF0000)),
+    HSVColor.fromColor(const Color(0xFFFF0000)),
+    HSVColor.fromColor(const Color(0xFFFF0000)),
+    HSVColor.fromColor(const Color(0xFFFF0000)),
+    HSVColor.fromColor(const Color(0xFFFF0000)),
+    HSVColor.fromColor(const Color(0xFFFF0000)),
+  ];
 
   @override
   void initState() {
     super.initState();
-    currentHsvColor = (widget.pickerHsvColor != null)
+    hsvColors[selected] = (widget.pickerHsvColor != null)
         ? widget.pickerHsvColor as HSVColor
         : HSVColor.fromColor(widget.pickerColor);
     // If there's no initial text in `hexInputController`,
     if (widget.hexInputController?.text.isEmpty == true) {
       // set it to the current's color HEX value.
       widget.hexInputController?.text = colorToHex(
-        currentHsvColor.toColor(),
+        hsvColors[selected].toColor(),
         enableAlpha: widget.enableAlpha,
       );
     }
@@ -181,7 +196,7 @@ class _ColorPickerState extends State<ColorPicker> {
   @override
   void didUpdateWidget(ColorPicker oldWidget) {
     super.didUpdateWidget(oldWidget);
-    currentHsvColor = (widget.pickerHsvColor != null)
+    hsvColors[selected] = (widget.pickerHsvColor != null)
         ? widget.pickerHsvColor as HSVColor
         : HSVColor.fromColor(widget.pickerColor);
   }
@@ -197,11 +212,11 @@ class _ColorPickerState extends State<ColorPicker> {
     // If it's the valid color:
     if (color != null) {
       // set it as the current color and
-      setState(() => currentHsvColor = HSVColor.fromColor(color));
+      setState(() => hsvColors[selected] = HSVColor.fromColor(color));
       // notify with a callback.
       widget.onColorChanged(color);
       if (widget.onHsvColorChanged != null) {
-        widget.onHsvColorChanged!(currentHsvColor);
+        widget.onHsvColorChanged!(hsvColors[selected]);
       }
     }
   }
@@ -209,15 +224,15 @@ class _ColorPickerState extends State<ColorPicker> {
   Widget colorPickerSlider(TrackType trackType) {
     return ColorPickerSlider(
       trackType,
-      currentHsvColor,
+      hsvColors[selected],
       (HSVColor color) {
         // Update text in `hexInputController` if provided.
         widget.hexInputController?.text =
             colorToHex(color.toColor(), enableAlpha: widget.enableAlpha);
-        setState(() => currentHsvColor = color);
-        widget.onColorChanged(currentHsvColor.toColor());
+        setState(() => hsvColors[selected] = color);
+        widget.onColorChanged(hsvColors[selected].toColor());
         if (widget.onHsvColorChanged != null) {
-          widget.onHsvColorChanged!(currentHsvColor);
+          widget.onHsvColorChanged!(hsvColors[selected]);
         }
       },
       displayThumbColor: widget.displayThumbColor,
@@ -228,15 +243,15 @@ class _ColorPickerState extends State<ColorPicker> {
     return ClipRRect(
       borderRadius: widget.pickerAreaBorderRadius,
       child: ColorPickerArea(
-        currentHsvColor,
+        hsvColors[selected],
         (HSVColor color) {
           // Update text in `hexInputController` if provided.
           widget.hexInputController?.text =
               colorToHex(color.toColor(), enableAlpha: widget.enableAlpha);
-          setState(() => currentHsvColor = color);
-          widget.onColorChanged(currentHsvColor.toColor());
+          setState(() => hsvColors[selected] = color);
+          widget.onColorChanged(hsvColors[selected].toColor());
           if (widget.onHsvColorChanged != null) {
-            widget.onHsvColorChanged!(currentHsvColor);
+            widget.onHsvColorChanged!(hsvColors[selected]);
           }
         },
         widget.paletteType,
@@ -256,7 +271,8 @@ class _ColorPickerState extends State<ColorPicker> {
               height: widget.colorPickerWidth * widget.pickerAreaHeightPercent,
               child: colorPickerArea(),
             ),
-          if (widget.showIndicator) ColorIndicator(currentHsvColor),
+          if (widget.showIndicator) ColorIndicator(hsvColors[selected]),
+          if (widget.showIndicatorList) indicatorList(widget.maxIndex),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -282,7 +298,7 @@ class _ColorPickerState extends State<ColorPicker> {
           ),
           if (widget.showLabel)
             ColorPickerLabel(
-              currentHsvColor,
+              hsvColors[selected],
               enableAlpha: widget.enableAlpha,
               textStyle: widget.labelTextStyle,
             ),
@@ -302,10 +318,11 @@ class _ColorPickerState extends State<ColorPicker> {
             ),
           Column(
             children: <Widget>[
+              if (widget.showIndicatorList) indicatorList(widget.maxIndex),
               Row(
                 children: <Widget>[
                   const SizedBox(width: 20.0),
-                  if (widget.showIndicator) ColorIndicator(currentHsvColor),
+                  if (widget.showIndicator) ColorIndicator(hsvColors[selected]),
                   Column(
                     children: <Widget>[
                       SizedBox(
@@ -327,7 +344,7 @@ class _ColorPickerState extends State<ColorPicker> {
               if (widget.showLabel) const SizedBox(height: 20.0),
               if (widget.showLabel)
                 ColorPickerLabel(
-                  currentHsvColor,
+                  hsvColors[selected],
                   enableAlpha: widget.enableAlpha,
                   textStyle: widget.labelTextStyle,
                 ),
@@ -336,6 +353,83 @@ class _ColorPickerState extends State<ColorPicker> {
         ],
       );
     }
+  }
+
+  Widget indicatorList(int maxIndex) {
+    return Row(
+      children: [
+        ColorIndicator(
+          hsvColors[0],
+          isSelected: 0 == selected,
+          activate: true,
+          onClick: () {
+            setState(() {
+              selected = 0;
+            });
+          },
+        ),
+        ColorIndicator(
+          hsvColors[1],
+          isSelected: 1 == selected,
+          activate: 1 <= maxIndex,
+          onClick: () {
+            setState(() {
+              selected = 1;
+            });
+          },
+        ),
+        ColorIndicator(
+          hsvColors[2],
+          isSelected: 2 == selected,
+          activate: 2 <= maxIndex,
+          onClick: () {
+            setState(() {
+              selected = 2;
+            });
+          },
+        ),
+        ColorIndicator(
+          hsvColors[3],
+          isSelected: 3 == selected,
+          activate: 3 <= maxIndex,
+          onClick: () {
+            setState(() {
+              selected = 3;
+            });
+          },
+        ),
+        ColorIndicator(
+          hsvColors[4],
+          isSelected: 4 == selected,
+          activate: 4 <= maxIndex,
+          onClick: () {
+            setState(() {
+              selected = 4;
+            });
+          },
+        ),
+        ColorIndicator(
+          hsvColors[5],
+          isSelected: 5 == selected,
+          activate: 5 <= maxIndex,
+          onClick: () {
+            setState(() {
+              selected = 5;
+            });
+          },
+        ),
+        ColorIndicator(
+          hsvColors[6],
+          isSelected: 6 == selected,
+          activate: 6 <= maxIndex,
+          onClick: () {
+            setState(() {
+              selected = 6;
+            });
+          },
+        ),
+      ],
+    );
   }
 }
 

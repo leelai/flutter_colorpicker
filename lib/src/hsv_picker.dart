@@ -628,25 +628,48 @@ class ColorIndicator extends StatelessWidget {
     Key? key,
     this.width = 50.0,
     this.height = 50.0,
+    this.onClick,
+    this.activate = true,
+    this.isSelected = false,
   }) : super(key: key);
 
   final HSVColor hsvColor;
   final double width;
   final double height;
+  final Function? onClick;
+  final bool isSelected;
+  final bool activate;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: width,
-      height: height,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.all(Radius.circular(1000.0)),
-        border: Border.all(color: const Color(0xffdddddd)),
+    var borderWidth = 0.5;
+    if (isSelected) {
+      borderWidth = 2.5;
+    }
+    return GestureDetector(
+      child: Container(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(1000.0)),
+          border: Border.all(
+            color: const Color(0xFF3E3E3E),
+            width: borderWidth,
+          ),
+        ),
+        child: ClipRRect(
+          borderRadius: const BorderRadius.all(Radius.circular(1000.0)),
+          child: Visibility(
+            child: CustomPaint(painter: IndicatorPainter(hsvColor.toColor())),
+            visible: activate,
+          ),
+        ),
       ),
-      child: ClipRRect(
-        borderRadius: const BorderRadius.all(Radius.circular(1000.0)),
-        child: CustomPaint(painter: IndicatorPainter(hsvColor.toColor())),
-      ),
+      onTap: () {
+        if (activate && onClick != null) {
+          onClick!();
+        }
+      },
     );
   }
 }

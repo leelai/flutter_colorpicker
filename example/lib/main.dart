@@ -66,24 +66,18 @@ class _MyAppState extends State<MyApp> {
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            titlePadding: const EdgeInsets.all(0.0),
-                            contentPadding: const EdgeInsets.all(0.0),
+                            titlePadding: const EdgeInsets.all(10.0),
+                            contentPadding: const EdgeInsets.all(10.0),
                             content: SingleChildScrollView(
                               child: ColorPicker(
                                 pickerColor: currentColor,
                                 onColorChanged: changeColor,
-                                colorPickerWidth: 300.0,
-                                pickerAreaHeightPercent: 0.7,
+                                maxIndex: 7,
                                 enableAlpha: false,
                                 displayThumbColor: true,
-                                showLabel: false,
-                                showIndicator: false,
+                                showLabel: true,
+                                showIndicator: true,
                                 showColorPickerArea: false,
-                                paletteType: PaletteType.hsv,
-                                pickerAreaBorderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(2.0),
-                                  topRight: Radius.circular(2.0),
-                                ),
                               ),
                             ),
                           );
