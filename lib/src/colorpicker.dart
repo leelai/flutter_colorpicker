@@ -32,6 +32,7 @@ class ColorPicker extends StatefulWidget {
     this.showIndicatorList = true,
     this.showIndicatorListNum = 1,
     this.maxIndex = 1,
+    this.indicatorSize = 38.0,
   }) : super(key: key);
 
   final Color pickerColor;
@@ -52,6 +53,7 @@ class ColorPicker extends StatefulWidget {
   final double pickerAreaHeightPercent;
   final BorderRadius pickerAreaBorderRadius;
   final int maxIndex;
+  final double indicatorSize;
 
   /// Allows setting the color using text input, via [TextEditingController].
   ///
@@ -360,6 +362,8 @@ class _ColorPickerState extends State<ColorPicker> {
       children: [
         ColorIndicator(
           hsvColors[0],
+          width: widget.indicatorSize,
+          height: widget.indicatorSize,
           isSelected: 0 == selected,
           activate: true,
           onClick: () {
@@ -368,8 +372,11 @@ class _ColorPickerState extends State<ColorPicker> {
             });
           },
         ),
+        const Spacer(),
         ColorIndicator(
           hsvColors[1],
+          width: widget.indicatorSize,
+          height: widget.indicatorSize,
           isSelected: 1 == selected,
           activate: 1 <= maxIndex,
           onClick: () {
@@ -378,8 +385,11 @@ class _ColorPickerState extends State<ColorPicker> {
             });
           },
         ),
+        const Spacer(),
         ColorIndicator(
           hsvColors[2],
+          width: widget.indicatorSize,
+          height: widget.indicatorSize,
           isSelected: 2 == selected,
           activate: 2 <= maxIndex,
           onClick: () {
@@ -388,8 +398,11 @@ class _ColorPickerState extends State<ColorPicker> {
             });
           },
         ),
+        const Spacer(),
         ColorIndicator(
           hsvColors[3],
+          width: widget.indicatorSize,
+          height: widget.indicatorSize,
           isSelected: 3 == selected,
           activate: 3 <= maxIndex,
           onClick: () {
@@ -398,8 +411,11 @@ class _ColorPickerState extends State<ColorPicker> {
             });
           },
         ),
+        const Spacer(),
         ColorIndicator(
           hsvColors[4],
+          width: widget.indicatorSize,
+          height: widget.indicatorSize,
           isSelected: 4 == selected,
           activate: 4 <= maxIndex,
           onClick: () {
@@ -408,8 +424,11 @@ class _ColorPickerState extends State<ColorPicker> {
             });
           },
         ),
+        const Spacer(),
         ColorIndicator(
           hsvColors[5],
+          width: widget.indicatorSize,
+          height: widget.indicatorSize,
           isSelected: 5 == selected,
           activate: 5 <= maxIndex,
           onClick: () {
@@ -418,8 +437,11 @@ class _ColorPickerState extends State<ColorPicker> {
             });
           },
         ),
+        const Spacer(),
         ColorIndicator(
           hsvColors[6],
+          width: widget.indicatorSize,
+          height: widget.indicatorSize,
           isSelected: 6 == selected,
           activate: 6 <= maxIndex,
           onClick: () {
