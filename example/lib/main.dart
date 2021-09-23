@@ -72,12 +72,12 @@ class _MyAppState extends State<MyApp> {
                               child: ColorPicker(
                                 pickerColor: currentColor,
                                 onColorChanged: changeColor,
-                                maxIndex: 7,
                                 enableAlpha: false,
                                 displayThumbColor: true,
                                 showLabel: true,
-                                showIndicator: true,
+                                showIndicator: false,
                                 showColorPickerArea: false,
+                                indicatorListLength: 5,
                               ),
                             ),
                           );
