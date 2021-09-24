@@ -15,6 +15,7 @@ class ColorPicker extends StatefulWidget {
     Key? key,
     required this.pickerColor,
     required this.onColorChanged,
+    this.onColorChanged2, //for multiple indicators
     this.pickerHsvColor,
     this.onHsvColorChanged,
     this.paletteType = PaletteType.hsv,
@@ -36,6 +37,7 @@ class ColorPicker extends StatefulWidget {
 
   final Color pickerColor;
   final ValueChanged<Color> onColorChanged;
+  final ValueChanged<List<Color>>? onColorChanged2;
   final HSVColor? pickerHsvColor;
   final ValueChanged<HSVColor>? onHsvColorChanged;
   final PaletteType paletteType;
@@ -231,6 +233,13 @@ class _ColorPickerState extends State<ColorPicker> {
             colorToHex(color.toColor(), enableAlpha: widget.enableAlpha);
         setState(() => hsvColors[selected] = color);
         widget.onColorChanged(hsvColors[selected].toColor());
+        if (widget.showIndicatorList && widget.onColorChanged2 != null) {
+          List<Color> colors = <Color>[];
+          for (var hsvColor in hsvColors) {
+            colors.add(hsvColor.toColor());
+          }
+          widget.onColorChanged2!(colors);
+        }
         if (widget.onHsvColorChanged != null) {
           widget.onHsvColorChanged!(hsvColors[selected]);
         }
@@ -319,8 +328,13 @@ class _ColorPickerState extends State<ColorPicker> {
             ),
           Column(
             children: <Widget>[
-              if (widget.showIndicatorList)
-                indicatorList(widget.indicatorListLength),
+              //todo: need to be fixed
+              // if (widget.showIndicatorList)
+              //   SizedBox(
+              //     height: 200,
+              //     width: 200,
+              //     child: indicatorList(widget.indicatorListLength),
+              //   ),
               Row(
                 children: <Widget>[
                   const SizedBox(width: 20.0),

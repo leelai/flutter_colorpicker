@@ -19,8 +19,10 @@ class _MyAppState extends State<MyApp> {
   List<Color> currentColors = [Colors.limeAccent, Colors.green];
 
   void changeColor(Color color) => setState(() => currentColor = color);
-  void changeColors(List<Color> colors) =>
-      setState(() => currentColors = colors);
+  void changeColors(List<Color> colors) {
+    print(colors);
+    setState(() => currentColors = colors);
+  }
 
   // Just an example of how to use/interpret/format text input's result.
   Future<void> copyToClipboard(String input) async {
@@ -72,6 +74,7 @@ class _MyAppState extends State<MyApp> {
                               child: ColorPicker(
                                 pickerColor: currentColor,
                                 onColorChanged: changeColor,
+                                onColorChanged2: changeColors,
                                 enableAlpha: false,
                                 displayThumbColor: true,
                                 showLabel: true,
