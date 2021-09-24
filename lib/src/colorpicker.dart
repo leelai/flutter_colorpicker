@@ -372,6 +372,9 @@ class _ColorPickerState extends State<ColorPicker> {
   }
 
   Widget indicatorList(int listSize) {
+    if (selected >= widget.indicatorListLength) {
+      selected = widget.indicatorListLength - 1;
+    }
     return Row(
       children: [
         ColorIndicator(
