@@ -16,7 +16,12 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   bool lightTheme = false;
   Color currentColor = Color(0xFFFF0000);
-  List<Color> currentColors = [Colors.limeAccent, Colors.green];
+  List<Color> currentColors = [
+    Colors.blue,
+    Colors.green,
+    Colors.yellow,
+    Colors.purple,
+  ];
 
   void changeColor(Color color) => setState(() => currentColor = color);
   void changeColors(List<Color> colors) {
@@ -89,6 +94,46 @@ class _MyAppState extends State<MyApp> {
                     },
                     child: Text(
                       'Change me',
+                      style: TextStyle(
+                        color: useWhiteForeground(currentColor)
+                            ? const Color(0xffffffff)
+                            : const Color(0xff000000),
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      primary: currentColor,
+                      elevation: 3,
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  ElevatedButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            titlePadding: const EdgeInsets.all(10.0),
+                            contentPadding: const EdgeInsets.all(10.0),
+                            content: SingleChildScrollView(
+                              child: ColorPicker(
+                                pickerColor: currentColor,
+                                pickerColors: currentColors,
+                                onColorChanged: changeColor,
+                                onColorChanged2: changeColors,
+                                enableAlpha: false,
+                                displayThumbColor: true,
+                                showLabel: true,
+                                showIndicator: false,
+                                showColorPickerArea: false,
+                                indicatorListLength: 5,
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                    child: Text(
+                      'Change me 2',
                       style: TextStyle(
                         color: useWhiteForeground(currentColor)
                             ? const Color(0xffffffff)

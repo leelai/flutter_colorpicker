@@ -15,6 +15,7 @@ class ColorPicker extends StatefulWidget {
     Key? key,
     required this.pickerColor,
     required this.onColorChanged,
+    this.pickerColors,
     this.onColorChanged2, //for multiple indicators
     this.pickerHsvColor,
     this.onHsvColorChanged,
@@ -36,6 +37,7 @@ class ColorPicker extends StatefulWidget {
   }) : super(key: key);
 
   final Color pickerColor;
+  final List<Color>? pickerColors;
   final ValueChanged<Color> onColorChanged;
   final ValueChanged<List<Color>>? onColorChanged2;
   final HSVColor? pickerHsvColor;
@@ -180,6 +182,11 @@ class _ColorPickerState extends State<ColorPicker> {
   @override
   void initState() {
     super.initState();
+    if (widget.pickerColors != null) {
+      for (var i = 0; i < widget.pickerColors!.length; i++) {
+        hsvColors[i] = HSVColor.fromColor(widget.pickerColors![i]);
+      }
+    }
     hsvColors[selected] = (widget.pickerHsvColor != null)
         ? widget.pickerHsvColor as HSVColor
         : HSVColor.fromColor(widget.pickerColor);
