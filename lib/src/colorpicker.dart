@@ -171,12 +171,12 @@ class _ColorPickerState extends State<ColorPicker> {
   int selected = 0;
   List<HSVColor> hsvColors = [
     HSVColor.fromColor(const Color(0xFFFF0000)),
-    HSVColor.fromColor(const Color(0xFFFF0000)),
-    HSVColor.fromColor(const Color(0xFFFF0000)),
-    HSVColor.fromColor(const Color(0xFFFF0000)),
-    HSVColor.fromColor(const Color(0xFFFF0000)),
-    HSVColor.fromColor(const Color(0xFFFF0000)),
-    HSVColor.fromColor(const Color(0xFFFF0000)),
+    HSVColor.fromColor(const Color(0xFFFFA600)),
+    HSVColor.fromColor(const Color(0xFFFFD900)),
+    HSVColor.fromColor(const Color(0xFF26FF00)),
+    HSVColor.fromColor(const Color(0xFF006EFF)),
+    HSVColor.fromColor(const Color(0xFFA200FF)),
+    HSVColor.fromColor(const Color(0xFFFF00BF)),
   ];
 
   @override
@@ -187,9 +187,6 @@ class _ColorPickerState extends State<ColorPicker> {
         hsvColors[i] = HSVColor.fromColor(widget.pickerColors![i]);
       }
     }
-    hsvColors[selected] = (widget.pickerHsvColor != null)
-        ? widget.pickerHsvColor as HSVColor
-        : HSVColor.fromColor(widget.pickerColor);
     // If there's no initial text in `hexInputController`,
     if (widget.hexInputController?.text.isEmpty == true) {
       // set it to the current's color HEX value.
@@ -205,9 +202,16 @@ class _ColorPickerState extends State<ColorPicker> {
   @override
   void didUpdateWidget(ColorPicker oldWidget) {
     super.didUpdateWidget(oldWidget);
-    hsvColors[selected] = (widget.pickerHsvColor != null)
-        ? widget.pickerHsvColor as HSVColor
-        : HSVColor.fromColor(widget.pickerColor);
+
+    if (widget.pickerColors != null) {
+      for (var i = 0; i < widget.pickerColors!.length; i++) {
+        hsvColors[i] = HSVColor.fromColor(widget.pickerColors![i]);
+      }
+    }
+
+    if (selected >= widget.indicatorListLength) {
+      selected = widget.indicatorListLength - 1;
+    }
   }
 
   void colorPickerTextInputListener() {
@@ -288,8 +292,7 @@ class _ColorPickerState extends State<ColorPicker> {
               child: colorPickerArea(),
             ),
           if (widget.showIndicator) ColorIndicator(hsvColors[selected]),
-          if (widget.showIndicatorList)
-            indicatorList(widget.indicatorListLength),
+          if (widget.showIndicatorList) indicatorList(),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -378,10 +381,7 @@ class _ColorPickerState extends State<ColorPicker> {
     }
   }
 
-  Widget indicatorList(int listSize) {
-    if (selected >= widget.indicatorListLength) {
-      selected = widget.indicatorListLength - 1;
-    }
+  Widget indicatorList() {
     return Row(
       children: [
         ColorIndicator(
@@ -402,7 +402,7 @@ class _ColorPickerState extends State<ColorPicker> {
           width: widget.indicatorSize,
           height: widget.indicatorSize,
           isSelected: 1 == selected,
-          activate: 1 < listSize,
+          activate: 1 < widget.indicatorListLength,
           onClick: () {
             setState(() {
               selected = 1;
@@ -415,7 +415,7 @@ class _ColorPickerState extends State<ColorPicker> {
           width: widget.indicatorSize,
           height: widget.indicatorSize,
           isSelected: 2 == selected,
-          activate: 2 < listSize,
+          activate: 2 < widget.indicatorListLength,
           onClick: () {
             setState(() {
               selected = 2;
@@ -428,7 +428,7 @@ class _ColorPickerState extends State<ColorPicker> {
           width: widget.indicatorSize,
           height: widget.indicatorSize,
           isSelected: 3 == selected,
-          activate: 3 < listSize,
+          activate: 3 < widget.indicatorListLength,
           onClick: () {
             setState(() {
               selected = 3;
@@ -441,7 +441,7 @@ class _ColorPickerState extends State<ColorPicker> {
           width: widget.indicatorSize,
           height: widget.indicatorSize,
           isSelected: 4 == selected,
-          activate: 4 < listSize,
+          activate: 4 < widget.indicatorListLength,
           onClick: () {
             setState(() {
               selected = 4;
@@ -454,7 +454,7 @@ class _ColorPickerState extends State<ColorPicker> {
           width: widget.indicatorSize,
           height: widget.indicatorSize,
           isSelected: 5 == selected,
-          activate: 5 < listSize,
+          activate: 5 < widget.indicatorListLength,
           onClick: () {
             setState(() {
               selected = 5;
@@ -467,7 +467,7 @@ class _ColorPickerState extends State<ColorPicker> {
           width: widget.indicatorSize,
           height: widget.indicatorSize,
           isSelected: 6 == selected,
-          activate: 6 < listSize,
+          activate: 6 < widget.indicatorListLength,
           onClick: () {
             setState(() {
               selected = 6;

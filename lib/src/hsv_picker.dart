@@ -293,9 +293,13 @@ class ThumbPainter extends CustomPainter {
 }
 
 class IndicatorPainter extends CustomPainter {
-  const IndicatorPainter(this.color);
+  const IndicatorPainter(
+    this.color, {
+    this.activate = true,
+  });
 
   final Color color;
+  final bool activate;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -315,8 +319,24 @@ class IndicatorPainter extends CustomPainter {
         Offset(size.width / 2, size.height / 2),
         size.height / 2,
         Paint()
-          ..color = color
+          ..color = Colors.white
           ..style = PaintingStyle.fill);
+
+    canvas.drawCircle(
+        Offset(size.width / 2, size.height / 2),
+        size.height / 2 - 3,
+        Paint()
+          ..color = activate ? color : Colors.black26
+          ..style = PaintingStyle.fill);
+
+    if (!activate) {
+      canvas.drawCircle(
+          Offset(size.width / 2, size.height / 2),
+          size.height / 2 - 4,
+          Paint()
+            ..color = Colors.white
+            ..style = PaintingStyle.fill);
+    }
   }
 
   @override
@@ -642,10 +662,6 @@ class ColorIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var borderWidth = 0.5;
-    if (isSelected) {
-      borderWidth = 2.5;
-    }
     return GestureDetector(
       child: Container(
         width: width,
@@ -653,15 +669,19 @@ class ColorIndicator extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(1000.0)),
           border: Border.all(
-            color: const Color(0xFF3E3E3E),
-            width: borderWidth,
+            color: (isSelected)
+                ? const Color(0xFF3E3E3E)
+                : const Color(0xFFFFFFFF),
+            width: 1.0,
           ),
         ),
         child: ClipRRect(
           borderRadius: const BorderRadius.all(Radius.circular(1000.0)),
-          child: Visibility(
-            child: CustomPaint(painter: IndicatorPainter(hsvColor.toColor())),
-            visible: activate,
+          child: CustomPaint(
+            painter: IndicatorPainter(
+              hsvColor.toColor(),
+              activate: activate,
+            ),
           ),
         ),
       ),
