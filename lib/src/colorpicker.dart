@@ -34,6 +34,7 @@ class ColorPicker extends StatefulWidget {
     this.showIndicatorList = true,
     this.indicatorListLength = 1,
     this.indicatorSize = 38.0,
+    this.displayOnly = false,
   }) : super(key: key);
 
   final Color pickerColor;
@@ -56,6 +57,7 @@ class ColorPicker extends StatefulWidget {
   final double pickerAreaHeightPercent;
   final BorderRadius pickerAreaBorderRadius;
   final double indicatorSize;
+  final bool displayOnly;
 
   /// Allows setting the color using text input, via [TextEditingController].
   ///
@@ -271,6 +273,7 @@ class _ColorPickerState extends State<ColorPicker> {
         }
       },
       displayThumbColor: widget.displayThumbColor,
+      displayOnly: widget.displayOnly,
     );
   }
 

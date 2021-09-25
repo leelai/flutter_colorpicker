@@ -493,6 +493,7 @@ class ColorPickerSlider extends StatelessWidget {
     Key? key,
     this.displayThumbColor = false,
     this.fullThumbColor = false,
+    this.displayOnly = false,
   }) : super(key: key);
 
   final TrackType trackType;
@@ -500,8 +501,10 @@ class ColorPickerSlider extends StatelessWidget {
   final ValueChanged<HSVColor> onColorChanged;
   final bool displayThumbColor;
   final bool fullThumbColor;
+  final bool displayOnly;
 
   void slideEvent(RenderBox getBox, BoxConstraints box, Offset globalPosition) {
+    if (displayOnly) return;
     double localDx = getBox.globalToLocal(globalPosition).dx - 15.0;
     double progress =
         localDx.clamp(0.0, box.maxWidth - 30.0) / (box.maxWidth - 30.0);
@@ -612,11 +615,14 @@ class ColorPickerSlider extends StatelessWidget {
             id: _SliderLayout.thumb,
             child: Transform.translate(
               offset: Offset(thumbOffset, 0.0),
-              child: CustomPaint(
-                painter: ThumbPainter(
-                  thumbColor: displayThumbColor ? thumbColor : null,
-                  fullThumbColor: fullThumbColor,
+              child: Visibility(
+                child: CustomPaint(
+                  painter: ThumbPainter(
+                    thumbColor: displayThumbColor ? thumbColor : null,
+                    fullThumbColor: fullThumbColor,
+                  ),
                 ),
+                visible: !displayOnly,
               ),
             ),
           ),
