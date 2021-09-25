@@ -169,19 +169,23 @@ class ColorPicker extends StatefulWidget {
 
 class _ColorPickerState extends State<ColorPicker> {
   int selected = 0;
+  HSVColor hsvColor = HSVColor.fromColor(Colors.red);
   List<HSVColor> hsvColors = [
-    HSVColor.fromColor(const Color(0xFFFF0000)),
-    HSVColor.fromColor(const Color(0xFFFFA600)),
-    HSVColor.fromColor(const Color(0xFFFFD900)),
-    HSVColor.fromColor(const Color(0xFF26FF00)),
-    HSVColor.fromColor(const Color(0xFF006EFF)),
-    HSVColor.fromColor(const Color(0xFFA200FF)),
-    HSVColor.fromColor(const Color(0xFFFF00BF)),
+    HSVColor.fromColor(Colors.red),
+    HSVColor.fromColor(Colors.orange),
+    HSVColor.fromColor(Colors.yellow),
+    HSVColor.fromColor(Colors.green),
+    HSVColor.fromColor(Colors.blue),
+    HSVColor.fromColor(Colors.indigo),
+    HSVColor.fromColor(Colors.purple),
   ];
 
   @override
   void initState() {
     super.initState();
+
+    hsvColor = HSVColor.fromColor(widget.pickerColor);
+
     if (widget.pickerColors != null) {
       for (var i = 0; i < widget.pickerColors!.length; i++) {
         hsvColors[i] = HSVColor.fromColor(widget.pickerColors![i]);
@@ -202,6 +206,8 @@ class _ColorPickerState extends State<ColorPicker> {
   @override
   void didUpdateWidget(ColorPicker oldWidget) {
     super.didUpdateWidget(oldWidget);
+
+    hsvColor = HSVColor.fromColor(widget.pickerColor);
 
     if (widget.pickerColors != null) {
       for (var i = 0; i < widget.pickerColors!.length; i++) {
@@ -225,11 +231,11 @@ class _ColorPickerState extends State<ColorPicker> {
     // If it's the valid color:
     if (color != null) {
       // set it as the current color and
-      setState(() => hsvColors[selected] = HSVColor.fromColor(color));
+      setState(() => hsvColor = HSVColor.fromColor(color));
       // notify with a callback.
       widget.onColorChanged(color);
       if (widget.onHsvColorChanged != null) {
-        widget.onHsvColorChanged!(hsvColors[selected]);
+        widget.onHsvColorChanged!(hsvColor);
       }
     }
   }
@@ -237,22 +243,31 @@ class _ColorPickerState extends State<ColorPicker> {
   Widget colorPickerSlider(TrackType trackType) {
     return ColorPickerSlider(
       trackType,
-      hsvColors[selected],
+      widget.showIndicatorList ? hsvColors[selected] : hsvColor,
       (HSVColor color) {
         // Update text in `hexInputController` if provided.
         widget.hexInputController?.text =
             colorToHex(color.toColor(), enableAlpha: widget.enableAlpha);
-        setState(() => hsvColors[selected] = color);
-        widget.onColorChanged(hsvColors[selected].toColor());
-        if (widget.showIndicatorList && widget.onColorChanged2 != null) {
-          List<Color> colors = <Color>[];
-          for (var hsvColor in hsvColors) {
-            colors.add(hsvColor.toColor());
+
+        if (widget.showIndicatorList) {
+          setState(() => hsvColors[selected] = color);
+
+          if (widget.onColorChanged2 != null) {
+            List<Color> colors = <Color>[];
+            for (var hsvColor in hsvColors) {
+              colors.add(hsvColor.toColor());
+            }
+            widget.onColorChanged2!(colors);
+            if (widget.onHsvColorChanged != null) {
+              widget.onHsvColorChanged!(hsvColors[selected]);
+            }
           }
-          widget.onColorChanged2!(colors);
-        }
-        if (widget.onHsvColorChanged != null) {
-          widget.onHsvColorChanged!(hsvColors[selected]);
+        } else {
+          setState(() => hsvColor = color);
+          widget.onColorChanged(hsvColor.toColor());
+          if (widget.onHsvColorChanged != null) {
+            widget.onHsvColorChanged!(hsvColor);
+          }
         }
       },
       displayThumbColor: widget.displayThumbColor,
@@ -263,15 +278,15 @@ class _ColorPickerState extends State<ColorPicker> {
     return ClipRRect(
       borderRadius: widget.pickerAreaBorderRadius,
       child: ColorPickerArea(
-        hsvColors[selected],
+        hsvColor,
         (HSVColor color) {
           // Update text in `hexInputController` if provided.
           widget.hexInputController?.text =
               colorToHex(color.toColor(), enableAlpha: widget.enableAlpha);
-          setState(() => hsvColors[selected] = color);
-          widget.onColorChanged(hsvColors[selected].toColor());
+          setState(() => hsvColor = color);
+          widget.onColorChanged(hsvColor.toColor());
           if (widget.onHsvColorChanged != null) {
-            widget.onHsvColorChanged!(hsvColors[selected]);
+            widget.onHsvColorChanged!(hsvColor);
           }
         },
         widget.paletteType,
@@ -291,7 +306,8 @@ class _ColorPickerState extends State<ColorPicker> {
               height: widget.colorPickerWidth * widget.pickerAreaHeightPercent,
               child: colorPickerArea(),
             ),
-          if (widget.showIndicator) ColorIndicator(hsvColors[selected]),
+          if (!widget.showIndicatorList && widget.showIndicator)
+            ColorIndicator(hsvColor),
           if (widget.showIndicatorList) indicatorList(),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -318,7 +334,7 @@ class _ColorPickerState extends State<ColorPicker> {
           ),
           if (widget.showLabel)
             ColorPickerLabel(
-              hsvColors[selected],
+              widget.showIndicatorList ? hsvColors[selected] : hsvColor,
               enableAlpha: widget.enableAlpha,
               textStyle: widget.labelTextStyle,
             ),
@@ -348,7 +364,8 @@ class _ColorPickerState extends State<ColorPicker> {
               Row(
                 children: <Widget>[
                   const SizedBox(width: 20.0),
-                  if (widget.showIndicator) ColorIndicator(hsvColors[selected]),
+                  if (!widget.showIndicatorList && widget.showIndicator)
+                    ColorIndicator(hsvColor),
                   Column(
                     children: <Widget>[
                       SizedBox(
@@ -370,7 +387,7 @@ class _ColorPickerState extends State<ColorPicker> {
               if (widget.showLabel) const SizedBox(height: 20.0),
               if (widget.showLabel)
                 ColorPickerLabel(
-                  hsvColors[selected],
+                  widget.showIndicatorList ? hsvColors[selected] : hsvColor,
                   enableAlpha: widget.enableAlpha,
                   textStyle: widget.labelTextStyle,
                 ),

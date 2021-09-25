@@ -14,18 +14,24 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  bool lightTheme = false;
-  Color currentColor = Color(0xFFFF0000);
+  bool lightTheme = true;
+  int indicatorListLength = 2;
+  Color currentColor = const Color(0xFFFF0000);
   List<Color> currentColors = [
-    Colors.blue,
-    Colors.green,
+    Colors.red,
+    Colors.orange,
     Colors.yellow,
+    Colors.green,
+    Colors.blue,
+    Colors.indigo,
     Colors.purple,
   ];
 
-  void changeColor(Color color) => setState(() => currentColor = color);
+  void changeColor(Color color) {
+    setState(() => currentColor = color);
+  }
+
   void changeColors(List<Color> colors) {
-    print(colors);
     setState(() => currentColors = colors);
   }
 
@@ -67,6 +73,51 @@ class _MyAppState extends State<MyApp> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
+                  Row(
+                    children: [
+                      InkWell(
+                        child: const Padding(
+                          padding: EdgeInsets.all(18.0),
+                          child: Text("+"),
+                        ),
+                        onTap: () {
+                          setState(() {
+                            if (indicatorListLength == 7) {
+                              return;
+                            }
+                            indicatorListLength = indicatorListLength + 1;
+                          });
+                        },
+                      ),
+                      InkWell(
+                        child: const Padding(
+                          padding: EdgeInsets.all(18.0),
+                          child: Text("-"),
+                        ),
+                        onTap: () {
+                          setState(() {
+                            if (indicatorListLength == 1) {
+                              return;
+                            }
+                            indicatorListLength = indicatorListLength - 1;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                  ColorPicker(
+                    pickerColor: currentColor,
+                    pickerColors: currentColors,
+                    onColorChanged: changeColor,
+                    onColorChanged2: changeColors,
+                    enableAlpha: false,
+                    displayThumbColor: false,
+                    showLabel: false,
+                    showIndicator: indicatorListLength == 1,
+                    showIndicatorList: indicatorListLength > 1,
+                    showColorPickerArea: false,
+                    indicatorListLength: indicatorListLength,
+                  ),
                   ElevatedButton(
                     onPressed: () {
                       showDialog(
@@ -79,13 +130,12 @@ class _MyAppState extends State<MyApp> {
                               child: ColorPicker(
                                 pickerColor: currentColor,
                                 onColorChanged: changeColor,
-                                onColorChanged2: changeColors,
                                 enableAlpha: false,
-                                displayThumbColor: true,
-                                showLabel: true,
-                                showIndicator: false,
+                                displayThumbColor: false,
+                                showLabel: false,
+                                showIndicator: true,
+                                showIndicatorList: false,
                                 showColorPickerArea: false,
-                                indicatorListLength: 5,
                               ),
                             ),
                           );
@@ -93,7 +143,7 @@ class _MyAppState extends State<MyApp> {
                       );
                     },
                     child: Text(
-                      'Change me',
+                      'Change me (one indecator)',
                       style: TextStyle(
                         color: useWhiteForeground(currentColor)
                             ? const Color(0xffffffff)
@@ -115,17 +165,43 @@ class _MyAppState extends State<MyApp> {
                             titlePadding: const EdgeInsets.all(10.0),
                             contentPadding: const EdgeInsets.all(10.0),
                             content: SingleChildScrollView(
-                              child: ColorPicker(
-                                pickerColor: currentColor,
-                                pickerColors: currentColors,
-                                onColorChanged: changeColor,
-                                onColorChanged2: changeColors,
-                                enableAlpha: false,
-                                displayThumbColor: true,
-                                showLabel: true,
-                                showIndicator: false,
-                                showColorPickerArea: false,
-                                indicatorListLength: 5,
+                              child: Column(
+                                children: [
+                                  InkWell(
+                                    child: const Text("+"),
+                                    onTap: () {
+                                      setState(() {
+                                        indicatorListLength =
+                                            indicatorListLength + 1;
+                                      });
+                                    },
+                                  ),
+                                  InkWell(
+                                    child: const Text("-"),
+                                    onTap: () {
+                                      setState(() {
+                                        indicatorListLength =
+                                            indicatorListLength - 1;
+                                      });
+                                    },
+                                  ),
+                                  Container(
+                                    height: 20,
+                                  ),
+                                  ColorPicker(
+                                    pickerColor: currentColor,
+                                    pickerColors: currentColors,
+                                    onColorChanged: changeColor,
+                                    onColorChanged2: changeColors,
+                                    enableAlpha: false,
+                                    displayThumbColor: true,
+                                    showLabel: false,
+                                    showIndicator: indicatorListLength == 1,
+                                    showIndicatorList: indicatorListLength > 1,
+                                    showColorPickerArea: false,
+                                    indicatorListLength: indicatorListLength,
+                                  ),
+                                ],
                               ),
                             ),
                           );
