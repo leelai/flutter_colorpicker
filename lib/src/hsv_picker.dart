@@ -125,15 +125,16 @@ class _SliderLayout extends MultiChildLayoutDelegate {
       track,
       BoxConstraints.tightFor(
         width: size.width - 30.0,
-        height: size.height / 5,
+        height: size.height / 4.5, //make it thicker
       ),
     );
-    positionChild(track, Offset(15.0, size.height * 0.4));
+    positionChild(track, Offset(15.0, size.height * 0.13)); //shift up
     layoutChild(
       thumb,
-      BoxConstraints.tightFor(width: 5.0, height: size.height / 4),
+      BoxConstraints.tightFor(
+          width: 15.0, height: size.height / 4), //enlarge width
     );
-    positionChild(thumb, Offset(0.0, size.height * 0.4));
+    positionChild(thumb, Offset(-7.5, size.height * 0.4)); //shift down
     layoutChild(
       gestureContainer,
       BoxConstraints.tightFor(width: size.width, height: size.height),
@@ -602,13 +603,16 @@ class ColorPickerSlider extends StatelessWidget {
         children: <Widget>[
           LayoutId(
             id: _SliderLayout.track,
-            child: ClipRRect(
-              borderRadius: const BorderRadius.all(Radius.circular(50.0)),
-              child: CustomPaint(
-                  painter: TrackPainter(
-                trackType,
-                hsvColor,
-              )),
+            child: Transform.translate(
+              offset: Offset(0, 0.0),
+              child: ClipRRect(
+                borderRadius: const BorderRadius.all(Radius.circular(50.0)),
+                child: CustomPaint(
+                    painter: TrackPainter(
+                  trackType,
+                  hsvColor,
+                )),
+              ),
             ),
           ),
           LayoutId(
@@ -617,9 +621,14 @@ class ColorPickerSlider extends StatelessWidget {
               offset: Offset(thumbOffset, 0.0),
               child: Visibility(
                 child: CustomPaint(
-                  painter: ThumbPainter(
-                    thumbColor: displayThumbColor ? thumbColor : null,
-                    fullThumbColor: fullThumbColor,
+                  // painter: ThumbPainter(
+                  //   thumbColor: displayThumbColor ? thumbColor : null,
+                  //   fullThumbColor: fullThumbColor,
+                  // ),
+                  painter: TrianglePainter(
+                    strokeColor: Color(0xFFF58522),
+                    strokeWidth: 1,
+                    paintingStyle: PaintingStyle.fill,
                   ),
                 ),
                 visible: !displayOnly,
@@ -645,6 +654,43 @@ class ColorPickerSlider extends StatelessWidget {
         ],
       );
     });
+  }
+}
+
+class TrianglePainter extends CustomPainter {
+  final Color strokeColor;
+  final PaintingStyle paintingStyle;
+  final double strokeWidth;
+
+  TrianglePainter({
+    this.strokeColor = Colors.black,
+    this.strokeWidth = 3,
+    this.paintingStyle = PaintingStyle.stroke,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = Paint()
+      ..color = strokeColor
+      ..strokeWidth = strokeWidth
+      ..style = paintingStyle;
+
+    canvas.drawPath(getTrianglePath(size.width, size.height), paint);
+  }
+
+  Path getTrianglePath(double x, double y) {
+    return Path()
+      ..moveTo(0, y)
+      ..lineTo(x / 2, 0)
+      ..lineTo(x, y)
+      ..lineTo(0, y);
+  }
+
+  @override
+  bool shouldRepaint(TrianglePainter oldDelegate) {
+    return oldDelegate.strokeColor != strokeColor ||
+        oldDelegate.paintingStyle != paintingStyle ||
+        oldDelegate.strokeWidth != strokeWidth;
   }
 }
 
