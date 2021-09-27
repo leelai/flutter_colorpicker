@@ -312,6 +312,7 @@ class _ColorPickerState extends State<ColorPicker> {
           if (!widget.showIndicatorList && widget.showIndicator)
             ColorIndicator(hsvColor),
           if (widget.showIndicatorList) indicatorList(),
+          if (widget.showIndicatorList) SizedBox(width: 10, height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
