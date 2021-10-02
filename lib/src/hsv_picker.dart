@@ -316,6 +316,8 @@ class IndicatorPainter extends CustomPainter {
       });
     });
 
+    canvas.drawPaint(chessPaintW);
+
     canvas.drawCircle(
         Offset(size.width / 2, size.height / 2),
         size.height / 2,
@@ -621,10 +623,6 @@ class ColorPickerSlider extends StatelessWidget {
               offset: Offset(thumbOffset, 0.0),
               child: Visibility(
                 child: CustomPaint(
-                  // painter: ThumbPainter(
-                  //   thumbColor: displayThumbColor ? thumbColor : null,
-                  //   fullThumbColor: fullThumbColor,
-                  // ),
                   painter: TrianglePainter(
                     strokeColor: Color(0xFFF58522),
                     strokeWidth: 1,
@@ -698,7 +696,7 @@ class ColorIndicator extends StatelessWidget {
   const ColorIndicator(
     this.hsvColor, {
     Key? key,
-    this.width = 50.0,
+    this.width = 300.0,
     this.height = 50.0,
     this.onClick,
     this.activate = true,

@@ -5,16 +5,17 @@ version: 1.0.0+1
 publish_to: none
 
 dependencies:
-  flutter:
-    sdk: flutter
-  flutter_colorpicker:
-    path: ../
+    flutter:
+        sdk: flutter
+    flutter_colorpicker:
+        path: ../
+    overlay_tutorial: ^2.0.4
 
 dev_dependencies:
-  flutter_lints: ^1.0.0
+    flutter_lints: ^1.0.0
 
 flutter:
-  uses-material-design: true
+    uses-material-design: true
 
-environment:                                                            
-  sdk: ">=2.12.0 <3.0.0"
+environment:
+    sdk: '>=2.12.0 <3.0.0'

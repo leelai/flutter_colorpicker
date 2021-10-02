@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_colorpicker/src/hsv_picker.dart';
 import 'package:flutter_colorpicker/src/utils.dart';
+import 'package:overlay_tutorial/overlay_tutorial.dart';
 
 // The default layout of Color Picker.
 class ColorPicker extends StatefulWidget {
@@ -35,6 +36,8 @@ class ColorPicker extends StatefulWidget {
     this.indicatorListLength = 1,
     this.indicatorSize = 38.0,
     this.displayOnly = false,
+    this.enableTutorial = false,
+    this.tutorialString,
   }) : super(key: key);
 
   final Color pickerColor;
@@ -58,6 +61,8 @@ class ColorPicker extends StatefulWidget {
   final BorderRadius pickerAreaBorderRadius;
   final double indicatorSize;
   final bool displayOnly;
+  final bool enableTutorial;
+  final List<String>? tutorialString;
 
   /// Allows setting the color using text input, via [TextEditingController].
   ///
@@ -181,6 +186,9 @@ class _ColorPickerState extends State<ColorPicker> {
     HSVColor.fromColor(Colors.indigo),
     HSVColor.fromColor(Colors.purple),
   ];
+  bool showIndicatorList = false;
+  bool enableTutorial = false;
+  bool showIndicator = false;
 
   @override
   void initState() {
@@ -203,6 +211,13 @@ class _ColorPickerState extends State<ColorPicker> {
     }
     // Listen to the text input, If there is an `hexInputController` provided.
     widget.hexInputController?.addListener(colorPickerTextInputListener);
+
+    showIndicatorList = widget.showIndicatorList;
+    enableTutorial = widget.enableTutorial;
+    showIndicator = widget.showIndicator;
+    if (widget.showIndicatorList) {
+      showIndicator = false;
+    }
   }
 
   @override
@@ -219,6 +234,12 @@ class _ColorPickerState extends State<ColorPicker> {
 
     if (selected >= widget.indicatorListLength) {
       selected = widget.indicatorListLength - 1;
+    }
+    showIndicatorList = widget.showIndicatorList;
+    enableTutorial = widget.enableTutorial;
+    showIndicator = widget.showIndicator;
+    if (widget.showIndicatorList) {
+      showIndicator = false;
     }
   }
 
@@ -245,13 +266,13 @@ class _ColorPickerState extends State<ColorPicker> {
   Widget colorPickerSlider(TrackType trackType) {
     return ColorPickerSlider(
       trackType,
-      widget.showIndicatorList ? hsvColors[selected] : hsvColor,
+      showIndicatorList ? hsvColors[selected] : hsvColor,
       (HSVColor color) {
         // Update text in `hexInputController` if provided.
         widget.hexInputController?.text =
             colorToHex(color.toColor(), enableAlpha: widget.enableAlpha);
 
-        if (widget.showIndicatorList) {
+        if (showIndicatorList) {
           setState(() => hsvColors[selected] = color);
 
           if (widget.onColorChanged2 != null) {
@@ -299,6 +320,15 @@ class _ColorPickerState extends State<ColorPicker> {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final tutorialColor = Colors.yellow;
+    final tutorialBoxdec = BoxDecoration(
+      color: const Color(0xDE464646), //#3E3E3ECC
+      border: Border.all(
+        color: Colors.white,
+      ),
+      borderRadius: const BorderRadius.all(Radius.circular(6.0)),
+    );
     if (MediaQuery.of(context).orientation == Orientation.portrait ||
         widget.portraitOnly) {
       return Column(
@@ -309,10 +339,75 @@ class _ColorPickerState extends State<ColorPicker> {
               height: widget.colorPickerWidth * widget.pickerAreaHeightPercent,
               child: colorPickerArea(),
             ),
-          if (!widget.showIndicatorList && widget.showIndicator)
-            ColorIndicator(hsvColor),
-          if (widget.showIndicatorList) indicatorList(),
-          if (widget.showIndicatorList) SizedBox(width: 10, height: 20),
+          if (!showIndicatorList && showIndicator)
+            OverlayTutorialHole(
+              key: const Key("1"),
+              enabled: enableTutorial,
+              overlayTutorialEntry: OverlayTutorialRectEntry(
+                padding: const EdgeInsets.all(5.0),
+                radius: const Radius.circular(5.0),
+                overlayTutorialHints: <OverlayTutorialWidgetHint>[
+                  OverlayTutorialWidgetHint(
+                    position: (rect) => Offset(30, rect.top - 5),
+                    builder: (context, rect, rRect) {
+                      return Container(
+                        key: const Key("1"),
+                        decoration: tutorialBoxdec,
+                        width: rRect.width + 5,
+                        height: rRect.height,
+                        child: Center(
+                          key: const Key("1"),
+                          child: Text(
+                            widget.tutorialString![0],
+                            style: textTheme.bodyText1!.copyWith(
+                              color: Colors.white,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+              child: ColorIndicator(hsvColor),
+            ),
+          if (!showIndicatorList && showIndicator)
+            const SizedBox(width: 10, height: 20),
+          if (showIndicatorList)
+            OverlayTutorialHole(
+              key: const Key("2"),
+              enabled: enableTutorial,
+              overlayTutorialEntry: OverlayTutorialRectEntry(
+                padding: const EdgeInsets.all(5.0),
+                radius: const Radius.circular(5.0),
+                overlayTutorialHints: <OverlayTutorialWidgetHint>[
+                  OverlayTutorialWidgetHint(
+                    position: (rect) => Offset(0, rect.top - 5),
+                    builder: (context, rect, rRect) {
+                      return Container(
+                        key: const Key("2"),
+                        decoration: tutorialBoxdec,
+                        width: rRect.width - 10,
+                        height: rRect.height,
+                        child: Center(
+                          key: const Key("2"),
+                          child: Text(
+                            widget.tutorialString![1],
+                            style: textTheme.bodyText1!.copyWith(
+                              color: Colors.white,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+              child: indicatorList(),
+            ),
+          if (showIndicatorList) const SizedBox(width: 10, height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -320,10 +415,62 @@ class _ColorPickerState extends State<ColorPicker> {
               Expanded(
                 child: Column(
                   children: <Widget>[
-                    SizedBox(
-                      height: 40.0,
-                      width: widget.colorPickerWidth,
-                      child: colorPickerSlider(TrackType.hue),
+                    OverlayTutorialHole(
+                      key: const Key("3"),
+                      enabled: enableTutorial,
+                      overlayTutorialEntry: OverlayTutorialRectEntry(
+                        padding: const EdgeInsets.all(5.0),
+                        radius: const Radius.circular(5.0),
+                        overlayTutorialHints: <OverlayTutorialWidgetHint>[
+                          OverlayTutorialWidgetHint(
+                            position: (rect) => Offset(30, rect.top - 5),
+                            builder: (context, rect, rRect) {
+                              return Container(
+                                decoration: tutorialBoxdec,
+                                width: rRect.width + 5,
+                                height: rRect.height,
+                                child: Center(
+                                  child: Row(
+                                    children: [
+                                      const Spacer(),
+                                      Text(
+                                        widget.tutorialString![2],
+                                        // '滑動',
+                                        style: textTheme.bodyText1!.copyWith(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      CustomPaint(
+                                        size: const Size(15, 10),
+                                        painter: TrianglePainter(
+                                          strokeColor: const Color(0xFFF58522),
+                                          strokeWidth: 1,
+                                          paintingStyle: PaintingStyle.fill,
+                                        ),
+                                      ),
+                                      Text(
+                                        widget.tutorialString![3],
+                                        // '選取顏色',
+                                        style: textTheme.bodyText1!.copyWith(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      const Spacer(),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                      child: SizedBox(
+                        height: 40.0,
+                        width: widget.colorPickerWidth,
+                        child: colorPickerSlider(TrackType.hue),
+                      ),
                     ),
                     if (widget.enableAlpha)
                       SizedBox(
@@ -338,7 +485,7 @@ class _ColorPickerState extends State<ColorPicker> {
           ),
           if (widget.showLabel)
             ColorPickerLabel(
-              widget.showIndicatorList ? hsvColors[selected] : hsvColor,
+              showIndicatorList ? hsvColors[selected] : hsvColor,
               enableAlpha: widget.enableAlpha,
               textStyle: widget.labelTextStyle,
             ),
@@ -368,7 +515,7 @@ class _ColorPickerState extends State<ColorPicker> {
               Row(
                 children: <Widget>[
                   const SizedBox(width: 20.0),
-                  if (!widget.showIndicatorList && widget.showIndicator)
+                  if (!showIndicatorList && showIndicator)
                     ColorIndicator(hsvColor),
                   Column(
                     children: <Widget>[
@@ -391,7 +538,7 @@ class _ColorPickerState extends State<ColorPicker> {
               if (widget.showLabel) const SizedBox(height: 20.0),
               if (widget.showLabel)
                 ColorPickerLabel(
-                  widget.showIndicatorList ? hsvColors[selected] : hsvColor,
+                  showIndicatorList ? hsvColors[selected] : hsvColor,
                   enableAlpha: widget.enableAlpha,
                   textStyle: widget.labelTextStyle,
                 ),
