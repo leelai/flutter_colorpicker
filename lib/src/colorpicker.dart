@@ -383,12 +383,12 @@ class _ColorPickerState extends State<ColorPicker> {
                 radius: const Radius.circular(5.0),
                 overlayTutorialHints: <OverlayTutorialWidgetHint>[
                   OverlayTutorialWidgetHint(
-                    position: (rect) => Offset(0, rect.top - 5),
+                    position: (rect) => Offset(30, rect.top - 5),
                     builder: (context, rect, rRect) {
                       return Container(
                         key: const Key("2"),
                         decoration: tutorialBoxdec,
-                        width: rRect.width - 10,
+                        width: rRect.width + 5,
                         height: rRect.height,
                         child: Center(
                           key: const Key("2"),
