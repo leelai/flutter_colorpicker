@@ -178,13 +178,13 @@ class _ColorPickerState extends State<ColorPicker> {
   int selected = 0;
   HSVColor hsvColor = HSVColor.fromColor(Colors.red);
   List<HSVColor> hsvColors = [
-    HSVColor.fromColor(Colors.red),
-    HSVColor.fromColor(Colors.orange),
-    HSVColor.fromColor(Colors.yellow),
-    HSVColor.fromColor(Colors.green),
-    HSVColor.fromColor(Colors.blue),
-    HSVColor.fromColor(Colors.indigo),
-    HSVColor.fromColor(Colors.purple),
+    HSVColor.fromColor(const Color(0xFFFF0000)),
+    HSVColor.fromColor(const Color(0xFFFFA600)),
+    HSVColor.fromColor(const Color(0xFFFBFF00)),
+    HSVColor.fromColor(const Color(0xFF5EFF00)),
+    HSVColor.fromColor(const Color(0xFF00EEFF)),
+    HSVColor.fromColor(const Color(0xFF4C00FF)),
+    HSVColor.fromColor(const Color(0xFFFF00F7)),
   ];
   bool showIndicatorList = false;
   bool enableTutorial = false;
@@ -442,6 +442,9 @@ class _ColorPickerState extends State<ColorPicker> {
                                           fontSize: 14,
                                         ),
                                       ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
                                       CustomPaint(
                                         size: const Size(15, 10),
                                         painter: TrianglePainter(
@@ -449,6 +452,9 @@ class _ColorPickerState extends State<ColorPicker> {
                                           strokeWidth: 1,
                                           paintingStyle: PaintingStyle.fill,
                                         ),
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
                                       ),
                                       Text(
                                         widget.tutorialString![3],
@@ -468,7 +474,7 @@ class _ColorPickerState extends State<ColorPicker> {
                         ],
                       ),
                       child: SizedBox(
-                        height: 40.0,
+                        height: 50.0,
                         width: widget.colorPickerWidth,
                         child: colorPickerSlider(TrackType.hue),
                       ),

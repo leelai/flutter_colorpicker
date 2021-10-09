@@ -121,25 +121,29 @@ class _SliderLayout extends MultiChildLayoutDelegate {
 
   @override
   void performLayout(Size size) {
+    //color bar
     layoutChild(
       track,
       BoxConstraints.tightFor(
-        width: size.width - 30.0,
-        height: size.height / 4.5, //make it thicker
-      ),
+          width: size.width * 0.9, height: size.height * 0.5),
     );
-    positionChild(track, Offset(15.0, size.height * 0.13)); //shift up
+    //color bar shift
+    positionChild(track, Offset(size.width * 0.05, 0));
+    //thumb
     layoutChild(
-      thumb,
-      BoxConstraints.tightFor(
-          width: 15.0, height: size.height / 4), //enlarge width
-    );
-    positionChild(thumb, Offset(-7.5, size.height * 0.4)); //shift down
+        thumb,
+        BoxConstraints.tightFor(
+            width: 15.0, height: size.height * 0.27) //enlarge width
+        );
+    //thumb shift
+    positionChild(thumb, Offset(0, size.height * 0.47)); //shift down
+    //gesture
     layoutChild(
       gestureContainer,
       BoxConstraints.tightFor(width: size.width, height: size.height),
     );
-    positionChild(gestureContainer, Offset.zero);
+    //gesture shift
+    positionChild(gestureContainer, Offset(0, size.height * 0.47));
   }
 
   @override
@@ -606,25 +610,26 @@ class ColorPickerSlider extends StatelessWidget {
           LayoutId(
             id: _SliderLayout.track,
             child: Transform.translate(
-              offset: Offset(0, 0.0),
+              offset: const Offset(0.0, 0.0),
               child: ClipRRect(
-                borderRadius: const BorderRadius.all(Radius.circular(50.0)),
+                borderRadius: const BorderRadius.all(Radius.circular(2.0)),
                 child: CustomPaint(
-                    painter: TrackPainter(
-                  trackType,
-                  hsvColor,
-                )),
+                  painter: TrackPainter(
+                    trackType,
+                    hsvColor,
+                  ),
+                ),
               ),
             ),
           ),
           LayoutId(
             id: _SliderLayout.thumb,
             child: Transform.translate(
-              offset: Offset(thumbOffset, 0.0),
+              offset: Offset(thumbOffset, 3.0),
               child: Visibility(
                 child: CustomPaint(
                   painter: TrianglePainter(
-                    strokeColor: Color(0xFFF58522),
+                    strokeColor: const Color(0xFFDB411A),
                     strokeWidth: 1,
                     paintingStyle: PaintingStyle.fill,
                   ),
@@ -678,10 +683,10 @@ class TrianglePainter extends CustomPainter {
 
   Path getTrianglePath(double x, double y) {
     return Path()
-      ..moveTo(0, y)
-      ..lineTo(x / 2, 0)
-      ..lineTo(x, y)
-      ..lineTo(0, y);
+      ..moveTo(-x * 0.9, 1.5 * y)
+      ..lineTo(x * 0.9, 1.5 * y)
+      ..lineTo(0, 0)
+      ..lineTo(-x * 0.9, 1.5 * y);
   }
 
   @override

@@ -19,13 +19,13 @@ class _MyAppState extends State<MyApp> {
   int indicatorListLength = 1;
   Color currentColor = const Color(0xFFFF0000);
   List<Color> currentColors = [
-    Colors.red,
-    Colors.orange,
-    Colors.yellow,
-    Colors.green,
-    Colors.blue,
-    Colors.indigo,
-    Colors.purple,
+    const Color(0xFFFF0000),
+    const Color(0xFFFFA600),
+    const Color(0xFFFBFF00),
+    const Color(0xFF5EFF00),
+    const Color(0xFF00EEFF),
+    const Color(0xFF4C00FF),
+    const Color(0xFFFF00F7),
   ];
   bool enableTutorial = false;
 
@@ -128,21 +128,25 @@ class _MyAppState extends State<MyApp> {
                         ),
                       ],
                     ),
-                    ColorPicker(
-                      pickerColor: currentColor,
-                      pickerColors: currentColors,
-                      onColorChanged: changeColor,
-                      onColorChanged2: changeColors,
-                      enableAlpha: false,
-                      displayThumbColor: false,
-                      showLabel: false,
-                      showIndicator: indicatorListLength == 1,
-                      showIndicatorList: indicatorListLength > 1,
-                      showColorPickerArea: false,
-                      indicatorListLength: indicatorListLength,
-                      displayOnly: false,
-                      enableTutorial: enableTutorial,
-                      tutorialString: const ["1", "2", "3", "4"],
+                    SizedBox(
+                      width: 300,
+                      height: 200,
+                      child: ColorPicker(
+                        pickerColor: currentColor,
+                        pickerColors: currentColors,
+                        onColorChanged: changeColor,
+                        onColorChanged2: changeColors,
+                        enableAlpha: false,
+                        displayThumbColor: false,
+                        showLabel: false,
+                        showIndicator: indicatorListLength == 1,
+                        showIndicatorList: indicatorListLength > 1,
+                        showColorPickerArea: false,
+                        indicatorListLength: indicatorListLength,
+                        displayOnly: false,
+                        enableTutorial: enableTutorial,
+                        tutorialString: const ["1", "2", "3", "4"],
+                      ),
                     ),
                     ElevatedButton(
                       onPressed: () {
