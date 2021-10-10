@@ -18,6 +18,7 @@ enum TrackType {
   green,
   blue,
   alpha,
+  custom,
 }
 enum ColorModel { hex, rgb, hsv, hsl }
 
@@ -194,6 +195,19 @@ class TrackPainter extends CustomPainter {
         ];
         Gradient gradient = LinearGradient(colors: colors);
         canvas.drawRect(rect, Paint()..shader = gradient.createShader(rect));
+        break;
+      case TrackType.custom:
+        //draw broader
+        canvas.drawRect(rect, Paint()..color = const Color(0xffB4B4B4));
+
+        final List<Color> colors = [
+          HSVColor.fromAHSV(1.0, hsvColor.hue, 1.0, 1.0).toColor(),
+          HSVColor.fromAHSV(1.0, hsvColor.hue, 0.0, 1.0).toColor(),
+        ];
+        Gradient gradient = LinearGradient(colors: colors);
+        canvas.drawRect(
+            const Offset(1, 1) & Size(size.width - 2, size.height - 2),
+            Paint()..shader = gradient.createShader(rect));
         break;
       case TrackType.saturationForHSL:
         final List<Color> colors = [
@@ -501,11 +515,13 @@ class ColorPickerSlider extends StatelessWidget {
     this.displayThumbColor = false,
     this.fullThumbColor = false,
     this.displayOnly = false,
+    this.onProgressChanged,
   }) : super(key: key);
 
   final TrackType trackType;
   final HSVColor hsvColor;
   final ValueChanged<HSVColor> onColorChanged;
+  final Function? onProgressChanged;
   final bool displayThumbColor;
   final bool fullThumbColor;
   final bool displayOnly;
@@ -522,6 +538,10 @@ class ColorPickerSlider extends StatelessWidget {
         onColorChanged(hsvColor.withHue(progress * 359));
         break;
       case TrackType.saturation:
+        onColorChanged(hsvColor.withSaturation(progress));
+        break;
+      case TrackType.custom:
+        if (onProgressChanged != null) onProgressChanged!(progress);
         onColorChanged(hsvColor.withSaturation(progress));
         break;
       case TrackType.saturationForHSL:
@@ -563,6 +583,7 @@ class ColorPickerSlider extends StatelessWidget {
           thumbColor = HSVColor.fromAHSV(1.0, hsvColor.hue, 1.0, 1.0).toColor();
           break;
         case TrackType.saturation:
+        case TrackType.custom:
           thumbOffset += (box.maxWidth - 30.0) * hsvColor.saturation;
           thumbColor =
               HSVColor.fromAHSV(1.0, hsvColor.hue, hsvColor.saturation, 1.0)

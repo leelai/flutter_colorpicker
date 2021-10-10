@@ -18,6 +18,7 @@ class ColorPicker extends StatefulWidget {
     required this.onColorChanged,
     this.pickerColors,
     this.onColorChanged2, //for multiple indicators
+    this.onProgressChanged,
     this.pickerHsvColor,
     this.onHsvColorChanged,
     this.paletteType = PaletteType.hsv,
@@ -37,18 +38,23 @@ class ColorPicker extends StatefulWidget {
     this.indicatorSize = 38.0,
     this.displayOnly = false,
     this.enableTutorial = false,
+    this.progressOnly = false,
     this.tutorialString,
+    this.progress,
   }) : super(key: key);
 
   final Color pickerColor;
   final List<Color>? pickerColors;
   final ValueChanged<Color> onColorChanged;
   final ValueChanged<List<Color>>? onColorChanged2;
+  final Function? onProgressChanged;
+  final double? progress;
   final HSVColor? pickerHsvColor;
   final ValueChanged<HSVColor>? onHsvColorChanged;
   final PaletteType paletteType;
   final bool enableAlpha;
   final bool showLabel;
+  final bool progressOnly;
   final bool showIndicator;
   final bool showIndicatorList;
   final int indicatorListLength;
@@ -194,7 +200,13 @@ class _ColorPickerState extends State<ColorPicker> {
   void initState() {
     super.initState();
 
-    hsvColor = HSVColor.fromColor(widget.pickerColor);
+    if (widget.progressOnly) {
+      var color = HSVColor.fromColor(const Color(0xFFF05A24));
+      hsvColor = HSVColor.fromAHSV(
+          color.alpha, color.hue, widget.progress!, color.value);
+    } else {
+      hsvColor = HSVColor.fromColor(widget.pickerColor);
+    }
 
     if (widget.pickerColors != null) {
       for (var i = 0; i < widget.pickerColors!.length; i++) {
@@ -224,7 +236,13 @@ class _ColorPickerState extends State<ColorPicker> {
   void didUpdateWidget(ColorPicker oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    hsvColor = HSVColor.fromColor(widget.pickerColor);
+    if (widget.progressOnly) {
+      var color = HSVColor.fromColor(const Color(0xFFF05A24));
+      hsvColor = HSVColor.fromAHSV(
+          color.alpha, color.hue, widget.progress!, color.value);
+    } else {
+      hsvColor = HSVColor.fromColor(widget.pickerColor);
+    }
 
     if (widget.pickerColors != null) {
       for (var i = 0; i < widget.pickerColors!.length; i++) {
@@ -295,6 +313,11 @@ class _ColorPickerState extends State<ColorPicker> {
       },
       displayThumbColor: widget.displayThumbColor,
       displayOnly: widget.displayOnly,
+      onProgressChanged: (progress) {
+        if (widget.onProgressChanged != null) {
+          widget.onProgressChanged!(progress);
+        }
+      },
     );
   }
 
@@ -339,7 +362,7 @@ class _ColorPickerState extends State<ColorPicker> {
               height: widget.colorPickerWidth * widget.pickerAreaHeightPercent,
               child: colorPickerArea(),
             ),
-          if (!showIndicatorList && showIndicator)
+          if (!showIndicatorList && showIndicator && !widget.progressOnly)
             OverlayTutorialHole(
               key: const Key("1"),
               enabled: enableTutorial,
@@ -372,9 +395,9 @@ class _ColorPickerState extends State<ColorPicker> {
               ),
               child: ColorIndicator(hsvColor),
             ),
-          if (!showIndicatorList && showIndicator)
+          if (!showIndicatorList && showIndicator && !widget.progressOnly)
             const SizedBox(width: 10, height: 20),
-          if (showIndicatorList)
+          if (showIndicatorList && !widget.progressOnly)
             OverlayTutorialHole(
               key: const Key("2"),
               enabled: enableTutorial,
@@ -407,95 +430,104 @@ class _ColorPickerState extends State<ColorPicker> {
               ),
               child: indicatorList(),
             ),
-          if (showIndicatorList) const SizedBox(width: 10, height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              // if (widget.showIndicator) ColorIndicator(currentHsvColor),
-              Expanded(
-                child: Column(
-                  children: <Widget>[
-                    OverlayTutorialHole(
-                      key: const Key("3"),
-                      enabled: enableTutorial,
-                      overlayTutorialEntry: OverlayTutorialRectEntry(
-                        padding: const EdgeInsets.all(5.0),
-                        radius: const Radius.circular(5.0),
-                        overlayTutorialHints: <OverlayTutorialWidgetHint>[
-                          OverlayTutorialWidgetHint(
-                            position: (rect) =>
-                                Offset(rect.left - 5, rect.top - 5),
-                            builder: (context, rect, rRect) {
-                              return Container(
-                                decoration: tutorialBoxdec,
-                                width: rRect.width + 5,
-                                height: rRect.height,
-                                child: Center(
-                                  child: Row(
-                                    children: [
-                                      const Spacer(),
-                                      Text(
-                                        widget.tutorialString![2],
-                                        // '滑動',
-                                        style: textTheme.bodyText1!.copyWith(
-                                          color: Colors.white,
-                                          fontSize: 14,
+          if (showIndicatorList && !widget.progressOnly)
+            const SizedBox(width: 10, height: 20),
+          if (!widget.progressOnly)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                // if (widget.showIndicator) ColorIndicator(currentHsvColor),
+                Expanded(
+                  child: Column(
+                    children: <Widget>[
+                      OverlayTutorialHole(
+                        key: const Key("3"),
+                        enabled: enableTutorial,
+                        overlayTutorialEntry: OverlayTutorialRectEntry(
+                          padding: const EdgeInsets.all(5.0),
+                          radius: const Radius.circular(5.0),
+                          overlayTutorialHints: <OverlayTutorialWidgetHint>[
+                            OverlayTutorialWidgetHint(
+                              position: (rect) =>
+                                  Offset(rect.left - 5, rect.top - 5),
+                              builder: (context, rect, rRect) {
+                                return Container(
+                                  decoration: tutorialBoxdec,
+                                  width: rRect.width + 5,
+                                  height: rRect.height,
+                                  child: Center(
+                                    child: Row(
+                                      children: [
+                                        const Spacer(),
+                                        Text(
+                                          widget.tutorialString![2],
+                                          // '滑動',
+                                          style: textTheme.bodyText1!.copyWith(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                          ),
                                         ),
-                                      ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      CustomPaint(
-                                        size: const Size(15, 10),
-                                        painter: TrianglePainter(
-                                          strokeColor: const Color(0xFFF58522),
-                                          strokeWidth: 1,
-                                          paintingStyle: PaintingStyle.fill,
+                                        const SizedBox(
+                                          width: 10,
                                         ),
-                                      ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      Text(
-                                        widget.tutorialString![3],
-                                        // '選取顏色',
-                                        style: textTheme.bodyText1!.copyWith(
-                                          color: Colors.white,
-                                          fontSize: 14,
+                                        CustomPaint(
+                                          size: const Size(15, 10),
+                                          painter: TrianglePainter(
+                                            strokeColor:
+                                                const Color(0xFFF58522),
+                                            strokeWidth: 1,
+                                            paintingStyle: PaintingStyle.fill,
+                                          ),
                                         ),
-                                      ),
-                                      const Spacer(),
-                                    ],
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        Text(
+                                          widget.tutorialString![3],
+                                          // '選取顏色',
+                                          style: textTheme.bodyText1!.copyWith(
+                                            color: Colors.white,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                        const Spacer(),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                          ),
-                        ],
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                        child: SizedBox(
+                          height: 50.0,
+                          width: widget.colorPickerWidth,
+                          child: colorPickerSlider(TrackType.hue),
+                        ),
                       ),
-                      child: SizedBox(
-                        height: 50.0,
-                        width: widget.colorPickerWidth,
-                        child: colorPickerSlider(TrackType.hue),
-                      ),
-                    ),
-                    if (widget.enableAlpha)
-                      SizedBox(
-                        height: 40.0,
-                        width: widget.colorPickerWidth - 75.0,
-                        child: colorPickerSlider(TrackType.alpha),
-                      ),
-                  ],
+                      if (widget.enableAlpha)
+                        SizedBox(
+                          height: 40.0,
+                          width: widget.colorPickerWidth - 75.0,
+                          child: colorPickerSlider(TrackType.alpha),
+                        ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
           if (widget.showLabel)
             ColorPickerLabel(
               showIndicatorList ? hsvColors[selected] : hsvColor,
               enableAlpha: widget.enableAlpha,
               textStyle: widget.labelTextStyle,
             ),
+          if (widget.progressOnly)
+            SizedBox(
+              height: 40.0,
+              width: 260.0,
+              child: colorPickerSlider(TrackType.custom),
+            )
           //const SizedBox(height: 20.0),
         ],
       );

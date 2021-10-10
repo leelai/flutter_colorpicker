@@ -17,7 +17,8 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   bool lightTheme = true;
   int indicatorListLength = 1;
-  Color currentColor = const Color(0xFFFF0000);
+  double currentProgress = 0.0;
+  Color currentColor = const Color(0xffF05A24);
   List<Color> currentColors = [
     const Color(0xFFFF0000),
     const Color(0xFFFFA600),
@@ -128,24 +129,51 @@ class _MyAppState extends State<MyApp> {
                         ),
                       ],
                     ),
+                    // SizedBox(
+                    //   width: 300,
+                    //   height: 200,
+                    //   child: ColorPicker(
+                    //     pickerColor: currentColor,
+                    //     pickerColors: currentColors,
+                    //     onColorChanged: changeColor,
+                    //     onColorChanged2: changeColors,
+                    //     enableAlpha: false,
+                    //     displayThumbColor: false,
+                    //     showLabel: false,
+                    //     showIndicator: indicatorListLength == 1,
+                    //     showIndicatorList: indicatorListLength > 1,
+                    //     showColorPickerArea: false,
+                    //     indicatorListLength: indicatorListLength,
+                    //     displayOnly: false,
+                    //     enableTutorial: enableTutorial,
+                    //     tutorialString: const ["1", "2", "3", "4"],
+                    //   ),
+                    // ),
                     SizedBox(
                       width: 300,
                       height: 200,
                       child: ColorPicker(
+                        progress: currentProgress,
                         pickerColor: currentColor,
-                        pickerColors: currentColors,
-                        onColorChanged: changeColor,
-                        onColorChanged2: changeColors,
+                        pickerColors: null,
+                        onColorChanged: (_) {},
+                        onColorChanged2: (_) {},
                         enableAlpha: false,
                         displayThumbColor: false,
                         showLabel: false,
-                        showIndicator: indicatorListLength == 1,
-                        showIndicatorList: indicatorListLength > 1,
+                        showCustom: true,
+                        showIndicator: false,
+                        showIndicatorList: false,
                         showColorPickerArea: false,
                         indicatorListLength: indicatorListLength,
                         displayOnly: false,
                         enableTutorial: enableTutorial,
                         tutorialString: const ["1", "2", "3", "4"],
+                        onProgressChanged: (value) {
+                          setState(() {
+                            currentProgress = value;
+                          });
+                        },
                       ),
                     ),
                     ElevatedButton(
