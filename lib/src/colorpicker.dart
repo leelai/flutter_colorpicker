@@ -396,7 +396,7 @@ class _ColorPickerState extends State<ColorPicker> {
               child: ColorIndicator(hsvColor),
             ),
           if (!showIndicatorList && showIndicator && !widget.progressOnly)
-            const SizedBox(width: 10, height: 20),
+            const SizedBox(width: 10, height: 10),
           if (showIndicatorList && !widget.progressOnly)
             OverlayTutorialHole(
               key: const Key("2"),
@@ -431,7 +431,7 @@ class _ColorPickerState extends State<ColorPicker> {
               child: indicatorList(),
             ),
           if (showIndicatorList && !widget.progressOnly)
-            const SizedBox(width: 10, height: 20),
+            const SizedBox(width: 10, height: 10),
           if (!widget.progressOnly)
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -524,7 +524,7 @@ class _ColorPickerState extends State<ColorPicker> {
             ),
           if (widget.progressOnly)
             SizedBox(
-              height: 40.0,
+              height: 80.0, //enlarge: text, tracker, thumb
               width: 260.0,
               child: colorPickerSlider(TrackType.custom),
             )

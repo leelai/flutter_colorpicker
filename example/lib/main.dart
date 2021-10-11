@@ -18,6 +18,7 @@ class _MyAppState extends State<MyApp> {
   bool lightTheme = true;
   int indicatorListLength = 1;
   double currentProgress = 0.0;
+  bool showCustom = false;
   Color currentColor = const Color(0xffF05A24);
   List<Color> currentColors = [
     const Color(0xFFFF0000),
@@ -127,53 +128,70 @@ class _MyAppState extends State<MyApp> {
                             });
                           },
                         ),
+                        InkWell(
+                          child: const Padding(
+                            padding: EdgeInsets.all(18.0),
+                            child: Text("custom"),
+                          ),
+                          onTap: () {
+                            setState(() {
+                              showCustom = !showCustom;
+                            });
+                          },
+                        ),
                       ],
                     ),
-                    // SizedBox(
-                    //   width: 300,
-                    //   height: 200,
-                    //   child: ColorPicker(
-                    //     pickerColor: currentColor,
-                    //     pickerColors: currentColors,
-                    //     onColorChanged: changeColor,
-                    //     onColorChanged2: changeColors,
-                    //     enableAlpha: false,
-                    //     displayThumbColor: false,
-                    //     showLabel: false,
-                    //     showIndicator: indicatorListLength == 1,
-                    //     showIndicatorList: indicatorListLength > 1,
-                    //     showColorPickerArea: false,
-                    //     indicatorListLength: indicatorListLength,
-                    //     displayOnly: false,
-                    //     enableTutorial: enableTutorial,
-                    //     tutorialString: const ["1", "2", "3", "4"],
-                    //   ),
-                    // ),
-                    SizedBox(
-                      width: 300,
-                      height: 200,
-                      child: ColorPicker(
-                        progress: currentProgress,
-                        pickerColor: currentColor,
-                        pickerColors: null,
-                        onColorChanged: (_) {},
-                        onColorChanged2: (_) {},
-                        enableAlpha: false,
-                        displayThumbColor: false,
-                        showLabel: false,
-                        showCustom: true,
-                        showIndicator: false,
-                        showIndicatorList: false,
-                        showColorPickerArea: false,
-                        indicatorListLength: indicatorListLength,
-                        displayOnly: false,
-                        enableTutorial: enableTutorial,
-                        tutorialString: const ["1", "2", "3", "4"],
-                        onProgressChanged: (value) {
-                          setState(() {
-                            currentProgress = value;
-                          });
-                        },
+                    Visibility(
+                      visible: showCustom,
+                      child: SizedBox(
+                        width: 300,
+                        height: 200,
+                        child: ColorPicker(
+                          pickerColor: currentColor,
+                          pickerColors: currentColors,
+                          onColorChanged: changeColor,
+                          onColorChanged2: changeColors,
+                          enableAlpha: false,
+                          displayThumbColor: false,
+                          showLabel: false,
+                          showIndicator: indicatorListLength == 1,
+                          showIndicatorList: indicatorListLength > 1,
+                          showColorPickerArea: false,
+                          indicatorListLength: indicatorListLength,
+                          displayOnly: false,
+                          enableTutorial: enableTutorial,
+                          tutorialString: const ["1", "2", "3", "4"],
+                        ),
+                      ),
+                    ),
+                    Visibility(
+                      visible: !showCustom,
+                      child: SizedBox(
+                        width: 300,
+                        height: 200,
+                        child: ColorPicker(
+                          progress: currentProgress,
+                          pickerColor: currentColor,
+                          pickerColors: null,
+                          onColorChanged: (_) {},
+                          onColorChanged2: (_) {},
+                          enableAlpha: false,
+                          displayThumbColor: false,
+                          showLabel: false,
+                          progressOnly: true,
+                          showIndicator: false,
+                          showIndicatorList: false,
+                          showColorPickerArea: false,
+                          indicatorListLength: indicatorListLength,
+                          displayOnly: false,
+                          enableTutorial: enableTutorial,
+                          tutorialString: const ["1", "2", "3", "4"],
+                          onProgressChanged: (value) {
+                            setState(() {
+                              currentProgress = value;
+                            });
+                          },
+                        ),
                       ),
                     ),
                     ElevatedButton(

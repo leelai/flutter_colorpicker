@@ -116,6 +116,7 @@ class HSLColorPainter extends CustomPainter {
 }
 
 class _SliderLayout extends MultiChildLayoutDelegate {
+  static const String text = 'text';
   static const String track = 'track';
   static const String thumb = 'thumb';
   static const String gestureContainer = 'gesturecontainer';
@@ -137,7 +138,7 @@ class _SliderLayout extends MultiChildLayoutDelegate {
             width: 15.0, height: size.height * 0.27) //enlarge width
         );
     //thumb shift
-    positionChild(thumb, Offset(0, size.height * 0.47)); //shift down
+    positionChild(thumb, Offset(0, size.height * 0.55)); //shift down
     //gesture
     layoutChild(
       gestureContainer,
@@ -149,6 +150,82 @@ class _SliderLayout extends MultiChildLayoutDelegate {
 
   @override
   bool shouldRelayout(_SliderLayout oldDelegate) => false;
+}
+
+class _SliderLayoutCustom extends MultiChildLayoutDelegate {
+  static const String text = 'text';
+  static const String track = 'track';
+  static const String thumb = 'thumb';
+  static const String gestureContainer = 'gesturecontainer';
+
+  @override
+  void performLayout(Size size) {
+    //text
+    layoutChild(
+      text,
+      BoxConstraints.tightFor(width: size.width, height: size.height * 0.2),
+    );
+    //text shift
+    positionChild(text, const Offset(0, 0));
+
+    //color bar
+    layoutChild(
+      track,
+      BoxConstraints.tightFor(
+          width: size.width * 0.9, height: size.height * 0.3),
+    );
+    //color bar shift
+    positionChild(track, Offset(size.width * 0.05, size.height * 0.33));
+    //thumb
+    layoutChild(
+        thumb,
+        BoxConstraints.tightFor(
+            width: 15.0, height: size.height * 0.18) //enlarge width
+        );
+    //thumb shift
+    positionChild(thumb, Offset(0, size.height * 0.69)); //shift down
+    //gesture
+    layoutChild(
+      gestureContainer,
+      BoxConstraints.tightFor(width: size.width, height: size.height * 2),
+    );
+    //gesture shift
+    positionChild(gestureContainer, Offset(0, size.height * 0.675));
+  }
+
+  @override
+  bool shouldRelayout(_SliderLayoutCustom oldDelegate) => false;
+}
+
+class MyTextPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    // final Rect rect = Offset.zero & size;
+    TextPainter(
+        text: const TextSpan(
+            text: '10',
+            style: TextStyle(fontSize: 16.0, color: Color(0XFFF05A24))),
+        textDirection: TextDirection.ltr)
+      ..layout(maxWidth: size.width, minWidth: size.width)
+      ..paint(canvas, const Offset(0.0, 0.0));
+    TextPainter(
+        text: const TextSpan(
+            text: '70',
+            style: TextStyle(fontSize: 16.0, color: Color(0XFFF05A24))),
+        textDirection: TextDirection.ltr)
+      ..layout(maxWidth: size.width, minWidth: size.width)
+      ..paint(canvas, Offset(size.width * 0.65, 0.0));
+    TextPainter(
+        text: const TextSpan(
+            text: '100',
+            style: TextStyle(fontSize: 16.0, color: Color(0XFFF05A24))),
+        textDirection: TextDirection.ltr)
+      ..layout(maxWidth: size.width, minWidth: size.width)
+      ..paint(canvas, Offset(size.width * 0.88, 0.0));
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
 class TrackPainter extends CustomPainter {
@@ -625,59 +702,122 @@ class ColorPickerSlider extends StatelessWidget {
           break;
       }
 
-      return CustomMultiChildLayout(
-        delegate: _SliderLayout(),
-        children: <Widget>[
-          LayoutId(
-            id: _SliderLayout.track,
-            child: Transform.translate(
-              offset: const Offset(0.0, 0.0),
-              child: ClipRRect(
-                borderRadius: const BorderRadius.all(Radius.circular(2.0)),
-                child: CustomPaint(
-                  painter: TrackPainter(
-                    trackType,
-                    hsvColor,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          LayoutId(
-            id: _SliderLayout.thumb,
-            child: Transform.translate(
-              offset: Offset(thumbOffset, 3.0),
-              child: Visibility(
-                child: CustomPaint(
-                  painter: TrianglePainter(
-                    strokeColor: const Color(0xFFDB411A),
-                    strokeWidth: 1,
-                    paintingStyle: PaintingStyle.fill,
-                  ),
-                ),
-                visible: !displayOnly,
-              ),
-            ),
-          ),
-          LayoutId(
-            id: _SliderLayout.gestureContainer,
-            child: LayoutBuilder(
-              builder: (BuildContext context, BoxConstraints box) {
-                RenderBox? getBox = context.findRenderObject() as RenderBox?;
-                return GestureDetector(
-                  onPanDown: (DragDownDetails details) => getBox != null
-                      ? slideEvent(getBox, box, details.globalPosition)
-                      : null,
-                  onPanUpdate: (DragUpdateDetails details) => getBox != null
-                      ? slideEvent(getBox, box, details.globalPosition)
-                      : null,
-                );
-              },
-            ),
-          ),
-        ],
-      );
+      return trackType == TrackType.custom
+          ? customLayout(thumbOffset)
+          : normalLayout(thumbOffset);
     });
+  }
+
+  Widget customLayout(double thumbOffset) {
+    return CustomMultiChildLayout(
+      delegate: _SliderLayoutCustom(),
+      children: <Widget>[
+        LayoutId(
+          id: _SliderLayout.text,
+          child: ClipRRect(
+            child: CustomPaint(
+              painter: MyTextPainter(),
+            ),
+          ),
+        ),
+        LayoutId(
+          id: _SliderLayout.track,
+          child: ClipRRect(
+            child: CustomPaint(
+              painter: TrackPainter(
+                trackType,
+                hsvColor,
+              ),
+            ),
+          ),
+        ),
+        LayoutId(
+          id: _SliderLayout.thumb,
+          child: Transform.translate(
+            offset: Offset(thumbOffset, 0.0),
+            child: Visibility(
+              child: CustomPaint(
+                // size: const Size(10, 10),
+                painter: TrianglePainter(
+                  strokeColor: const Color(0xFFDB411A),
+                  strokeWidth: 1,
+                  paintingStyle: PaintingStyle.fill,
+                ),
+              ),
+              visible: !displayOnly,
+            ),
+          ),
+        ),
+        LayoutId(
+          id: _SliderLayout.gestureContainer,
+          child: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints box) {
+              RenderBox? getBox = context.findRenderObject() as RenderBox?;
+              return GestureDetector(
+                onPanDown: (DragDownDetails details) => getBox != null
+                    ? slideEvent(getBox, box, details.globalPosition)
+                    : null,
+                onPanUpdate: (DragUpdateDetails details) => getBox != null
+                    ? slideEvent(getBox, box, details.globalPosition)
+                    : null,
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget normalLayout(double thumbOffset) {
+    return CustomMultiChildLayout(
+      delegate: _SliderLayout(),
+      children: <Widget>[
+        LayoutId(
+          id: _SliderLayout.track,
+          child: ClipRRect(
+            borderRadius: const BorderRadius.all(Radius.circular(2.0)),
+            child: CustomPaint(
+              painter: TrackPainter(
+                trackType,
+                hsvColor,
+              ),
+            ),
+          ),
+        ),
+        LayoutId(
+          id: _SliderLayout.thumb,
+          child: Transform.translate(
+            offset: Offset(thumbOffset, 0.0),
+            child: Visibility(
+              child: CustomPaint(
+                painter: TrianglePainter(
+                  strokeColor: const Color(0xFFDB411A),
+                  strokeWidth: 1,
+                  paintingStyle: PaintingStyle.fill,
+                ),
+              ),
+              visible: !displayOnly,
+            ),
+          ),
+        ),
+        LayoutId(
+          id: _SliderLayout.gestureContainer,
+          child: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints box) {
+              RenderBox? getBox = context.findRenderObject() as RenderBox?;
+              return GestureDetector(
+                onPanDown: (DragDownDetails details) => getBox != null
+                    ? slideEvent(getBox, box, details.globalPosition)
+                    : null,
+                onPanUpdate: (DragUpdateDetails details) => getBox != null
+                    ? slideEvent(getBox, box, details.globalPosition)
+                    : null,
+              );
+            },
+          ),
+        ),
+      ],
+    );
   }
 }
 
