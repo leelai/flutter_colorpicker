@@ -500,7 +500,7 @@ class _ColorPickerState extends State<ColorPicker> {
                           ],
                         ),
                         child: SizedBox(
-                          height: 50.0,
+                          height: 75.0, //調整bar高度
                           width: widget.colorPickerWidth,
                           child: colorPickerSlider(TrackType.hue),
                         ),

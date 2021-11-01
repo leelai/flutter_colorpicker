@@ -844,10 +844,10 @@ class TrianglePainter extends CustomPainter {
 
   Path getTrianglePath(double x, double y) {
     return Path()
-      ..moveTo(-x * 0.9, 1.5 * y)
-      ..lineTo(x * 0.9, 1.5 * y)
+      ..moveTo(-x * 0.96, 1.2 * y)
+      ..lineTo(x * 0.96, 1.2 * y)
       ..lineTo(0, 0)
-      ..lineTo(-x * 0.9, 1.5 * y);
+      ..lineTo(-x * 0.96, 1.2 * y);
   }
 
   @override
@@ -863,7 +863,7 @@ class ColorIndicator extends StatelessWidget {
     this.hsvColor, {
     Key? key,
     this.width = 300.0,
-    this.height = 50.0,
+    this.height = 65.0, //調整單一顏色圓圈大小
     this.onClick,
     this.activate = true,
     this.isSelected = false,
