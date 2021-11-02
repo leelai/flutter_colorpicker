@@ -470,13 +470,16 @@ class _ColorPickerState extends State<ColorPicker> {
                                         const SizedBox(
                                           width: 10,
                                         ),
-                                        CustomPaint(
-                                          size: const Size(15, 10),
-                                          painter: TrianglePainter(
-                                            strokeColor:
-                                                const Color(0xFFF58522),
-                                            strokeWidth: 1,
-                                            paintingStyle: PaintingStyle.fill,
+                                        Transform.translate(
+                                          offset: const Offset(6, -3),
+                                          child: CustomPaint(
+                                            size: const Size(13, 16),
+                                            painter: TrianglePainter(
+                                              strokeColor:
+                                                  const Color(0xFFF05A24),
+                                              strokeWidth: 1,
+                                              paintingStyle: PaintingStyle.fill,
+                                            ),
                                           ),
                                         ),
                                         const SizedBox(

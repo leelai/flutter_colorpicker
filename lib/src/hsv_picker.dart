@@ -739,7 +739,7 @@ class ColorPickerSlider extends StatelessWidget {
               child: CustomPaint(
                 // size: const Size(10, 10),
                 painter: TrianglePainter(
-                  strokeColor: const Color(0xFFDB411A),
+                  strokeColor: const Color(0xFFF05A24),
                   strokeWidth: 1,
                   paintingStyle: PaintingStyle.fill,
                 ),
@@ -791,7 +791,7 @@ class ColorPickerSlider extends StatelessWidget {
             child: Visibility(
               child: CustomPaint(
                 painter: TrianglePainter(
-                  strokeColor: const Color(0xFFDB411A),
+                  strokeColor: const Color(0xFFF05A24),
                   strokeWidth: 1,
                   paintingStyle: PaintingStyle.fill,
                 ),
