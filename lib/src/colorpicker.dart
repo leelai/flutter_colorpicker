@@ -344,7 +344,6 @@ class _ColorPickerState extends State<ColorPicker> {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final tutorialColor = Colors.yellow;
     final tutorialBoxdec = BoxDecoration(
       color: const Color(0xDE464646), //#3E3E3ECC
       border: Border.all(
@@ -372,12 +371,12 @@ class _ColorPickerState extends State<ColorPicker> {
                 overlayTutorialHints: <OverlayTutorialWidgetHint>[
                   OverlayTutorialWidgetHint(
                     position: (rect) => Offset(rect.left - 5, rect.top - 5),
-                    builder: (context, rect, rRect) {
+                    builder: (context, rRect) {
                       return Container(
                         key: const Key("1"),
                         decoration: tutorialBoxdec,
-                        width: rRect.width,
-                        height: rRect.height,
+                        width: rRect.rRect!.width,
+                        height: rRect.rRect!.height,
                         child: Center(
                           key: const Key("1"),
                           child: Text(
@@ -407,12 +406,12 @@ class _ColorPickerState extends State<ColorPicker> {
                 overlayTutorialHints: <OverlayTutorialWidgetHint>[
                   OverlayTutorialWidgetHint(
                     position: (rect) => Offset(rect.left - 5, rect.top - 5),
-                    builder: (context, rect, rRect) {
+                    builder: (context, rRect) {
                       return Container(
                         key: const Key("2"),
                         decoration: tutorialBoxdec,
-                        width: rRect.width + 5,
-                        height: rRect.height,
+                        width: rRect.rRect!.width + 5,
+                        height: rRect.rRect!.height,
                         child: Center(
                           key: const Key("2"),
                           child: Text(
@@ -450,11 +449,11 @@ class _ColorPickerState extends State<ColorPicker> {
                             OverlayTutorialWidgetHint(
                               position: (rect) =>
                                   Offset(rect.left - 5, rect.top - 5),
-                              builder: (context, rect, rRect) {
+                              builder: (contex, rRect) {
                                 return Container(
                                   decoration: tutorialBoxdec,
-                                  width: rRect.width + 5,
-                                  height: rRect.height,
+                                  width: rRect.rRect!.width + 5,
+                                  height: rRect.rRect!.height,
                                   child: Center(
                                     child: Row(
                                       children: [
