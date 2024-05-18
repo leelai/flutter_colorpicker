@@ -381,7 +381,7 @@ class _ColorPickerState extends State<ColorPicker> {
                           key: const Key("1"),
                           child: Text(
                             widget.tutorialString![0],
-                            style: textTheme.bodyText1!.copyWith(
+                            style: textTheme.bodyMedium!.copyWith(
                               color: Colors.white,
                               fontSize: 14,
                             ),
@@ -416,7 +416,7 @@ class _ColorPickerState extends State<ColorPicker> {
                           key: const Key("2"),
                           child: Text(
                             widget.tutorialString![1],
-                            style: textTheme.bodyText1!.copyWith(
+                            style: textTheme.bodyMedium!.copyWith(
                               color: Colors.white,
                               fontSize: 14,
                             ),
@@ -461,7 +461,7 @@ class _ColorPickerState extends State<ColorPicker> {
                                         Text(
                                           widget.tutorialString![2],
                                           // '滑動',
-                                          style: textTheme.bodyText1!.copyWith(
+                                          style: textTheme.bodyMedium!.copyWith(
                                             color: Colors.white,
                                             fontSize: 14,
                                           ),
@@ -487,7 +487,7 @@ class _ColorPickerState extends State<ColorPicker> {
                                         Text(
                                           widget.tutorialString![3],
                                           // '選取顏色',
-                                          style: textTheme.bodyText1!.copyWith(
+                                          style: textTheme.bodyMedium!.copyWith(
                                             color: Colors.white,
                                             fontSize: 14,
                                           ),
@@ -814,7 +814,7 @@ class _SlidePickerState extends State<SlidePicker> {
                   child: Text(
                     palette.toString().split('.').last[0].toUpperCase(),
                     style: widget.sliderTextStyle ??
-                        Theme.of(context).textTheme.bodyText1?.copyWith(
+                        Theme.of(context).textTheme.bodyMedium?.copyWith(
                             fontWeight: FontWeight.bold, fontSize: 16.0),
                   ),
                 ),

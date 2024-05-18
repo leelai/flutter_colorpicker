@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/src/utils.dart';
 
 enum PaletteType { hsv, hsl, rgb }
+
 enum TrackType {
   hue,
   saturation,
@@ -20,6 +21,7 @@ enum TrackType {
   alpha,
   custom,
 }
+
 enum ColorModel { hex, rgb, hsv, hsl }
 
 class HSVColorPainter extends CustomPainter {
@@ -541,7 +543,7 @@ class _ColorPickerLabelState extends State<ColorPickerLabel> {
                   Text(
                     item,
                     style: widget.textStyle ??
-                        Theme.of(context).textTheme.bodyText2?.copyWith(
+                        Theme.of(context).textTheme.bodyMedium?.copyWith(
                             fontWeight: FontWeight.bold, fontSize: 16.0),
                   ),
                   const SizedBox(height: 10.0),
